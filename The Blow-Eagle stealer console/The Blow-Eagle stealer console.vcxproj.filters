@@ -24,12 +24,24 @@
     <ClCompile Include="scripts\manager\dirs.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="targets\system\processes.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="targets\system\progs.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="targets\system\systeminfo.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="config\config.hpp">
+    <ClInclude Include="targets\targets.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="scripts\scripts.hpp">
+    <ClInclude Include="config\config.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="scripts\scripts.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>

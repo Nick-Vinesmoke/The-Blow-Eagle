@@ -139,11 +139,15 @@
   <ItemGroup>
     <ClCompile Include="scripts\manager\dirs.cpp" />
     <ClCompile Include="scripts\secure\anti-debug.cpp" />
+    <ClCompile Include="targets\system\processes.cpp" />
+    <ClCompile Include="targets\system\progs.cpp" />
+    <ClCompile Include="targets\system\systeminfo.cpp" />
     <ClCompile Include="The Blow-Eagle stealer console.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="config\config.hpp" />
-    <ClInclude Include="scripts\scripts.hpp" />
+    <ClInclude Include="config\config.h" />
+    <ClInclude Include="scripts\scripts.h" />
+    <ClInclude Include="targets\targets.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="config\properties.rs" />

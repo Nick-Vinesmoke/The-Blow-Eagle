@@ -17,3 +17,16 @@
 */
 
 // all targets 
+
+namespace cursystem
+{
+	/// <summary>
+	/// get processes
+	/// </summary>
+	void GetProcesses();
+
+	/// <summary>
+	/// get all installed progs in program files
+	/// </summary>
+	void GetProgs();
+}
