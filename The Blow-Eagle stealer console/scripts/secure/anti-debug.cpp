@@ -263,9 +263,9 @@ void CheckMacs()
 		if (adapter->AddressLength != 6) {
 			continue;  // Skip non-physical adapters
 		}
-
+		macAddress << ":";
 		for (DWORD i = 0; i < adapter->AddressLength; ++i) {
-			if (i >= 0) {
+			if (i > 0) {
 				macAddress << ":";
 			}
 
@@ -274,6 +274,8 @@ void CheckMacs()
 		macAddress << ":";
 		break;
 	}
+
+	//std::cout << "MAC Address: " << macAddress.str() << std::endl;
 
 	std::string mac = "";
 
