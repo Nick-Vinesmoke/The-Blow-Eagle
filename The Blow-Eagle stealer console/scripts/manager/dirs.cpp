@@ -15,3 +15,19 @@
 |                               ╚═════╝░░░░╚═╝░░░╚══════╝╚═╝░░╚═╝╚══════╝╚══════╝╚═╝░░╚═╝                         |
 ==================================================================================================================|
 */
+#include "../scripts.hpp"
+#include <windows.h>
+#include <Lmcons.h>
+#include <filesystem>
+#include <string>
+
+namespace fs = std::filesystem;
+
+void manager::MakeDirs()
+{
+	char username[UNLEN + 1];
+	DWORD username_len = UNLEN + 1;
+	GetUserName(username, &username_len);
+
+	return fs::create_directory(std::string("/users/") + username + "/desktop/" + dir_name)
+}

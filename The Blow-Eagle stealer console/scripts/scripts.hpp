@@ -25,3 +25,10 @@ namespace antidebug {
 	/// </summary>
 	void AntiDebug();
 }
+
+namespace manager {
+	/// <summary>
+	/// make needed dirs;
+	/// </summary>
+	void MakeDirs();
+}
