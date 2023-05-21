@@ -17,14 +17,14 @@
 */
 // main source code file
 
-#include "config/config.hpp"
-#include "scripts/scripts.hpp"
+#include "config/config.h"
+#include "scripts/scripts.h"
 
 
 /// <summary>
 /// call secure functions
 /// </summary>
-void Secure();
+void Functions();
 
 
 
@@ -36,12 +36,15 @@ void Secure();
 /// <returns>0</returns>
 int main(void)
 {
-	if (!config::debuging)
-		Secure();
+	Functions();
+	
 	return 0;
 }
 
-void Secure() 
+void Functions()
 {
-	antidebug::AntiDebug();
+	if (!config::debuging)
+		antidebug::AntiDebug();
+
+	manager::MakeDirs();
 }

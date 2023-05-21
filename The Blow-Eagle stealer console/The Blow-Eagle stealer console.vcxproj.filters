@@ -21,6 +21,9 @@
     <ClCompile Include="scripts\secure\anti-debug.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="scripts\manager\dirs.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="config\config.hpp">

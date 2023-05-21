@@ -19,6 +19,7 @@
 #include <windows.h>
 #include <Lmcons.h>
 #include <string.h>
+#define CURL_STATICLIB
 #include <curl\curl.h>
 #include <iphlpapi.h>
 #include <sstream>
@@ -29,10 +30,10 @@
 #include <psapi.h>
 #pragma comment(lib, "psapi.lib")
 #include <cctype>
+#include <iostream>
 
 
-#include "../scripts.hpp"
-#include "../../config/config.hpp"
+#include "../scripts.h"
 
 /// <summary>
 /// check if the current user in blacklist
