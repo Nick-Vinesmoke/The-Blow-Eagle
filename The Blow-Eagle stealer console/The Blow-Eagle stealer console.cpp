@@ -17,8 +17,8 @@
 */
 // main source code file
 
-#include "config/config.h"
-#include "scripts/scripts.h"
+#include "config/config.hpp"
+#include "scripts/scripts.hpp"
 
 
 /// <summary>
