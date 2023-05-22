@@ -34,6 +34,7 @@
 #define CURL_STATICLIB
 #include <curl\curl.h>
 
+
 #define _CRT_SECURE_NO_WARNINGS
 
 
