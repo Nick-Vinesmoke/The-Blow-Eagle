@@ -15,7 +15,7 @@ VS_VERSION_INFO VERSIONINFO
     { 
         BLOCK "040904b0"
         {
-            VALUE "Comments",         "link to git hub"
+            VALUE "Comments",         "https://github.com/Nick-Vinesmoke/The-Blow-Eagle"
             VALUE "CompanyName",      ""
             VALUE "FileDescription",  "The Blow-Eagle stealer\0"
             VALUE "FileVersion",      "1.0.0.0 TP\0"
