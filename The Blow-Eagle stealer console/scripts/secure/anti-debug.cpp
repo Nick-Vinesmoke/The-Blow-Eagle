@@ -22,7 +22,6 @@
 #include <windows.h>
 #include <Lmcons.h>
 #include <string.h>
-#define CURL_STATICLIB
 #include <curl\curl.h>
 #include <iphlpapi.h>
 #include <sstream>
@@ -153,6 +152,12 @@ void antidebug::AntiDebug()
 		exit(0);
 }
 
+size_t WriteCallback(char* contents, size_t size, size_t nmemb, std::string* output) {
+	size_t totalSize = size * nmemb;
+	output->append(contents, totalSize);
+	return totalSize;
+}
+
 void CheckUser()
 {
 	TCHAR string[UNLEN + 1];
@@ -208,12 +213,6 @@ void CheckHWIDs()
 			break;
 		}
 	}
-}
-
-size_t WriteCallback(char* contents, size_t size, size_t nmemb, std::string* output) {
-	size_t totalSize = size * nmemb;
-	output->append(contents, totalSize);
-	return totalSize;
 }
 
 void CheckIPs()

