@@ -34,6 +34,9 @@
 #include <curl\curl.h>
 #include <tchar.h>
 #include <intrin.h>
+#include <dxgi.h>
+
+#pragma comment(lib, "dxgi.lib")
 
 #pragma comment(lib, "wbemuuid.lib")
 #include <VersionHelpers.h>
@@ -67,6 +70,8 @@ void GetGeneralInfo();
 
 void CPU();
 
+void GPU();
+
 std::string GetCPUType();
 
 std::string GetWindowsOSType();
@@ -85,6 +90,7 @@ void cursystem::GetSysInfo()
 
 	GetGeneralInfo();
 	CPU();
+	GPU();
 
 
 	std::ofstream file(mainPath, std::ios::app);
@@ -275,7 +281,7 @@ void CPU()
 std::string GetCPUType() 
 {
 
-	    std::string cpuType;
+	std::string cpuType;
 
     int cpuInfo[4] = { -1 };
     char cpuBrandString[0x40] = { 0 };
@@ -300,4 +306,37 @@ std::string GetCPUType()
 
     return cpuType;
 
+}
+
+void GPU() 
+{
+	global::info += "\n\n";
+
+	IDXGIFactory* pFactory = nullptr;
+	if (FAILED(CreateDXGIFactory(__uuidof(IDXGIFactory), (void**)&pFactory))) {
+		std::cerr << "Failed to create DXGI Factory" << std::endl;
+		return;
+	}
+
+	IDXGIAdapter* pAdapter = nullptr;
+	UINT adapterIndex = 0;
+	while (pFactory->EnumAdapters(adapterIndex, &pAdapter) != DXGI_ERROR_NOT_FOUND) {
+		DXGI_ADAPTER_DESC adapterDesc;
+		if (SUCCEEDED(pAdapter->GetDesc(&adapterDesc))) {
+			global::info += "GPU " + std::to_string(adapterIndex + 1) + ":" + '\n';
+			std::wstring ws(adapterDesc.Description);
+			std::string str(ws.begin(), ws.end());
+			global::info +="  Description: " + str + '\n';
+			global::info += "  Dedicated Video Memory: " + std::to_string((adapterDesc.DedicatedVideoMemory / (1024 * 1024))) + " MB" + '\n';
+			global::info += "  System Video Memory: " + std::to_string((adapterDesc.SharedSystemMemory / (1024 * 1024))) + " MB" + '\n';
+			global::info += "  Memory Bus Width: " + std::to_string(adapterDesc.DedicatedVideoMemory / 8 )+ " bits" + '\n';
+
+		}
+
+		pAdapter->Release();
+		pAdapter = nullptr;
+		adapterIndex++;
+	}
+
+	pFactory->Release();
 }
