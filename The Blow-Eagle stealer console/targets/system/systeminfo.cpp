@@ -269,7 +269,7 @@ void CPU()
 		DWORD freqValue;
 		DWORD freqSize = sizeof(freqValue);
 		if (RegQueryValueEx(hKey, _T("~MHz"), NULL, NULL, reinterpret_cast<LPBYTE>(&freqValue), &freqSize) == ERROR_SUCCESS) {
-			global::info += "Maximum CPU Frequency: " + std::to_string(freqValue); + " MHz" + '\n';
+			global::info += "Maximum CPU Frequency: " + std::to_string(freqValue) + " MHz\n";
 		}
 
 		RegCloseKey(hKey);
