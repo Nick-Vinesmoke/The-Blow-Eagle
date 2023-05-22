@@ -41,7 +41,6 @@
 #pragma comment(lib, "wbemuuid.lib")
 #include <VersionHelpers.h>
 
-#pragma warning(disable : 4996)
 
 namespace global 
 {
@@ -222,7 +221,7 @@ void GetGeneralInfo()
 
 std::string GetWindowsOSType() {
 
-	float ret = 0.0;
+	float ret = 0.0f;
 	NTSTATUS(WINAPI * RtlGetVersion)(LPOSVERSIONINFOEXW);
 	OSVERSIONINFOEXW osInfo;
 	*(FARPROC*)&RtlGetVersion = GetProcAddress(GetModuleHandleA("ntdll"), "RtlGetVersion");
