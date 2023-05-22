@@ -41,6 +41,7 @@
 #pragma comment(lib, "wbemuuid.lib")
 #include <VersionHelpers.h>
 
+#pragma warning(disable : 4996)
 
 namespace global 
 {
@@ -221,30 +222,17 @@ void GetGeneralInfo()
 
 std::string GetWindowsOSType() {
 
-	if (IsWindows10OrGreater()) {
-		return "Windows 10";
+	float ret = 0.0;
+	NTSTATUS(WINAPI * RtlGetVersion)(LPOSVERSIONINFOEXW);
+	OSVERSIONINFOEXW osInfo;
+	*(FARPROC*)&RtlGetVersion = GetProcAddress(GetModuleHandleA("ntdll"), "RtlGetVersion");
+	if (NULL != RtlGetVersion)
+	{
+		osInfo.dwOSVersionInfoSize = sizeof(osInfo);
+		RtlGetVersion(&osInfo);
+		ret = osInfo.dwMajorVersion;
 	}
-	else if (IsWindowsServer()) {
-		return "Windows Server";
-	}
-	else if (IsWindows8Point1OrGreater()) {
-		return "Windows 8.1";
-	}
-	else if (IsWindows8OrGreater()) {
-		return "Windows 8";
-	}
-	else if (IsWindows7OrGreater()) {
-		return "Windows 7";
-	}
-	else if (IsWindowsVistaOrGreater()) {
-		return "Windows Vista";
-	}
-	else if (IsWindowsXPOrGreater()) {
-		return "Windows XP";
-	}
-	else {
-		return "Unknown Windows version";
-	}
+	return "Windows " + std::to_string(ret);
 
 }
 
