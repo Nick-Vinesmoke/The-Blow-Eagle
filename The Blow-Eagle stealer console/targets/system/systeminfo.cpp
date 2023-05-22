@@ -246,13 +246,16 @@ void CPU()
 {
 	// Get the CPU type
 	std::string cpuType = GetCPUType();
+
+	//std:: cout << "\n\nCPU Type: " + cpuType + '\n';
 	global::info += "\n\nCPU Type: " + cpuType + '\n';
 
 	// Get the number of CPU cores
 	SYSTEM_INFO sysInfo;
 	GetSystemInfo(&sysInfo);
 	DWORD numCores = sysInfo.dwNumberOfProcessors;
-	global::info += "Number of CPU Cores: " + numCores + '\n';
+	global::info += "Number of CPU Cores: " + std::to_string(numCores) + '\n';
+	//std::cout << "Number of CPU Cores: " << std::to_string(numCores) << '\n';
 
 	// Get the maximum CPU frequency
 	HKEY hKey;
@@ -260,7 +263,7 @@ void CPU()
 		DWORD freqValue;
 		DWORD freqSize = sizeof(freqValue);
 		if (RegQueryValueEx(hKey, _T("~MHz"), NULL, NULL, reinterpret_cast<LPBYTE>(&freqValue), &freqSize) == ERROR_SUCCESS) {
-			global::info += "Maximum CPU Frequency: " + freqValue + std::string(" MHz") + '\n';
+			global::info += "Maximum CPU Frequency: " + std::to_string(freqValue); + " MHz" + '\n';
 		}
 
 		RegCloseKey(hKey);
