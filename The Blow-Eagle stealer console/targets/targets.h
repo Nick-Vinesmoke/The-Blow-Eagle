@@ -38,3 +38,16 @@ namespace cursystem
 	/// </summary>
 	void GetSysInfo();
 }
+
+namespace gaming 
+{
+	void BattleNet();
+
+	void Epic();
+
+	void Minecraft();
+
+	void Steam();
+
+	void Ubisoft();
+}

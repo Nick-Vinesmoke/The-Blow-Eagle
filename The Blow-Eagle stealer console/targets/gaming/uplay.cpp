@@ -18,3 +18,11 @@
 |									https://github.com/Nick-Vinesmoke/The-Blow-Eagle							   |
 |==================================================================================================================|
 */
+
+#include "../targets.h"
+#include "../../config/config.h"
+
+void gaming::Ubisoft()
+{
+
+}

