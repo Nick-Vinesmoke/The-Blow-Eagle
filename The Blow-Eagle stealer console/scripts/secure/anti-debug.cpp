@@ -24,7 +24,7 @@
 #include <windows.h>
 #include <Lmcons.h>
 #include <string.h>
-#include <curl\curl.h>
+
 #include <iphlpapi.h>
 #include <sstream>
 #pragma comment(lib, "iphlpapi.lib")
@@ -38,6 +38,7 @@
 
 
 #include "../scripts.h"
+#include  "../../helper/helper.h"
 
 /// <summary>
 /// check if the current user in blacklist
@@ -154,20 +155,12 @@ void antidebug::AntiDebug()
 		exit(0);
 }
 
-size_t WriteCallback(char* contents, size_t size, size_t nmemb, std::string* output) {
-	size_t totalSize = size * nmemb;
-	output->append(contents, totalSize);
-	return totalSize;
-}
+
 
 void CheckUser()
 {
-	TCHAR string[UNLEN + 1];
-	DWORD size = UNLEN + 1;
-	GetUserName((TCHAR*)string, &size);
-	std::wstring ws(string);
-	std::string userName(ws.begin(), ws.end());
-	std::cout << userName << std::endl;
+	std::string userName = func::GetUser();
+
 	for (size_t i = 0; i < std::size(global::blackListedUsers); i++)
 	{
 		if (global::blackListedUsers[i] == userName) 
@@ -219,21 +212,8 @@ void CheckHWIDs()
 
 void CheckIPs()
 {
-	std::string ipAddress = "";
+	std::string ipAddress = func::GetIP();
 
-	CURL* curl = curl_easy_init();
-	if (curl) {
-		curl_easy_setopt(curl, CURLOPT_URL, "https://api.ipify.org");
-		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteCallback);
-		curl_easy_setopt(curl, CURLOPT_WRITEDATA, &ipAddress);
-
-		CURLcode res = curl_easy_perform(curl);
-		if (res != CURLE_OK) {
-			std::cerr << "Failed to retrieve IP address: " << curl_easy_strerror(res) << std::endl;
-		}
-
-		curl_easy_cleanup(curl);
-	}
 	std::cout << "External IP Address: " << ipAddress << std::endl;
 
 	for (size_t i = 0; i < std::size(global::blackListedIPS); i++)

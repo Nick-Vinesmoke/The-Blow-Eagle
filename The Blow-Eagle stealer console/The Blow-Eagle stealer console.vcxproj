@@ -140,6 +140,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="helper\helper.cpp" />
     <ClCompile Include="scripts\manager\dirs.cpp" />
     <ClCompile Include="scripts\secure\anti-debug.cpp" />
     <ClCompile Include="targets\browsers\browsers.cpp" />
@@ -163,6 +164,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="config\config.c" />
+    <ClInclude Include="helper\helper.h" />
     <ClInclude Include="scripts\scripts.h" />
     <ClInclude Include="targets\targets.h" />
   </ItemGroup>

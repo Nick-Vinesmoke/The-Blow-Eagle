@@ -27,7 +27,6 @@
 #include <windows.h>
 #include <Lmcons.h>
 #include <direct.h>
-#include <string.h>
 #include <filesystem>
 
 namespace fs = std::filesystem;
