@@ -90,4 +90,9 @@
   <ItemGroup>
     <None Include="config\properties.rs" />
   </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="config\AssemblyInfo.rc">
+      <Filter>Файлы ресурсов</Filter>
+    </ResourceCompile>
+  </ItemGroup>
 </Project>
