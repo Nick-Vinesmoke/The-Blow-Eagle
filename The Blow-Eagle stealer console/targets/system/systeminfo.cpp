@@ -22,6 +22,7 @@
 #include "../targets.h"
 #include "../../config/config.h"
 
+
 #include <windows.h>
 #include <tlhelp32.h>
 #include <Lmcons.h>
@@ -35,11 +36,15 @@
 #include <tchar.h>
 #include <intrin.h>
 #include <dxgi.h>
-
+#include <pdh.h>
+#pragma comment(lib, "pdh.lib")
 #pragma comment(lib, "dxgi.lib")
-
 #pragma comment(lib, "wbemuuid.lib")
-#include <VersionHelpers.h>
+#include <Wbemidl.h>
+#pragma comment(lib, "wbemuuid.lib")
+#include <comdef.h>
+#include <Wbemidl.h>
+#pragma comment(lib, "wbemuuid.lib")
 
 
 namespace global 
@@ -72,6 +77,10 @@ void CPU();
 
 void GPU();
 
+void RAM();
+
+void Drives();
+
 std::string GetCPUType();
 
 std::string GetWindowsOSType();
@@ -91,6 +100,8 @@ void cursystem::GetSysInfo()
 	GetGeneralInfo();
 	CPU();
 	GPU();
+	RAM();
+	Drives();
 
 
 	std::ofstream file(mainPath, std::ios::app);
@@ -326,4 +337,189 @@ void GPU()
 	}
 
 	pFactory->Release();
+}
+
+void RAM() 
+{
+	global::info += "\n\n";
+
+	PDH_STATUS pdhStatus;
+	HQUERY hQuery = NULL;
+	HCOUNTER hCounter = NULL;
+	PDH_FMT_COUNTERVALUE counterValue;
+
+	// Step 1: Initialize the PDH library
+	pdhStatus = PdhOpenQuery(NULL, 0, &hQuery);
+	if (pdhStatus != ERROR_SUCCESS) {
+		std::cerr << "Failed to initialize PDH library. Error code: " << pdhStatus << std::endl;
+		return;
+	}
+
+	// Step 2: Add the performance counter for total physical memory
+	pdhStatus = PdhAddCounter(hQuery, TEXT("\\Memory\\Available Bytes"), 0, &hCounter);
+	if (pdhStatus != ERROR_SUCCESS) {
+		std::cerr << "Failed to add counter for available memory. Error code: " << pdhStatus << std::endl;
+		PdhCloseQuery(hQuery);
+		return;
+	}
+
+	// Step 3: Collect the performance data
+	pdhStatus = PdhCollectQueryData(hQuery);
+	if (pdhStatus != ERROR_SUCCESS) {
+		std::cerr << "Failed to collect query data. Error code: " << pdhStatus << std::endl;
+		PdhCloseQuery(hQuery);
+		return;
+	}
+
+	// Step 4: Retrieve the counter value for available memory
+	pdhStatus = PdhGetFormattedCounterValue(hCounter, PDH_FMT_LARGE, NULL, &counterValue);
+	if (pdhStatus != ERROR_SUCCESS) {
+		std::cerr << "Failed to get counter value. Error code: " << pdhStatus << std::endl;
+		PdhCloseQuery(hQuery);
+		return;
+	}
+
+	// Step 5: Calculate used memory by subtracting available memory from total memory
+	MEMORYSTATUSEX memoryStatus;
+	memoryStatus.dwLength = sizeof(memoryStatus);
+	GlobalMemoryStatusEx(&memoryStatus);
+	DWORDLONG totalMemory = memoryStatus.ullTotalPhys;
+	DWORDLONG usedMemory = totalMemory - counterValue.largeValue;
+	DWORDLONG availableMemory = totalMemory - usedMemory;
+
+	// Step 6: Print the memory information
+	global::info += "Total Memory: " + std::to_string(totalMemory / (1024 * 1024)) + " MB\n";
+	global::info += "Available Memory: " + std::to_string(availableMemory / (1024 * 1024)) + " MB\n";
+	global::info += "Used Memory: " + std::to_string(usedMemory / (1024 * 1024)) + " MB\n\n";
+
+
+	// Step 7: Cleanup
+	PdhCloseQuery(hQuery);
+
+	HRESULT hres;
+
+	// Step 1: Initialize COM
+	hres = CoInitializeEx(0, COINIT_MULTITHREADED);
+	if (FAILED(hres)) {
+		std::cerr << "Failed to initialize COM library. Error code: " << hres << std::endl;
+		return;
+	}
+
+	// Step 2: Obtain the initial locator to WMI
+	IWbemLocator* pLoc = NULL;
+	hres = CoCreateInstance(CLSID_WbemLocator, 0, CLSCTX_INPROC_SERVER, IID_IWbemLocator, (LPVOID*)&pLoc);
+	if (FAILED(hres)) {
+		std::cerr << "Failed to create IWbemLocator object. Error code: " << hres << std::endl;
+		CoUninitialize();
+		return;
+	}
+
+	// Step 3: Connect to WMI through the IWbemLocator::ConnectServer method
+	IWbemServices* pSvc = NULL;
+	hres = pLoc->ConnectServer(_bstr_t(L"ROOT\\CIMV2"), NULL, NULL, 0, NULL, 0, 0, &pSvc);
+	if (FAILED(hres)) {
+		std::cerr << "Failed to connect to WMI. Error code: " << hres << std::endl;
+		pLoc->Release();
+		CoUninitialize();
+		return;
+	}
+
+	// Step 4: Set the security levels on the proxy
+	hres = CoSetProxyBlanket(pSvc, RPC_C_AUTHN_WINNT, RPC_C_AUTHZ_NONE, NULL, RPC_C_AUTHN_LEVEL_CALL,
+		RPC_C_IMP_LEVEL_IMPERSONATE, NULL, EOAC_NONE);
+	if (FAILED(hres)) {
+		std::cerr << "Failed to set proxy blanket. Error code: " << hres << std::endl;
+		pSvc->Release();
+		pLoc->Release();
+		CoUninitialize();
+		return;
+	}
+
+	// Step 5: Use the IWbemServices pointer to make requests of WMI
+	IEnumWbemClassObject* pEnumerator = NULL;
+	hres = pSvc->ExecQuery(bstr_t("WQL"), bstr_t("SELECT * FROM Win32_PhysicalMemory"), WBEM_FLAG_FORWARD_ONLY | WBEM_FLAG_RETURN_IMMEDIATELY, NULL, &pEnumerator);
+	if (FAILED(hres)) {
+		std::cerr << "Failed to execute WQL query. Error code: " << hres << std::endl;
+		pSvc->Release();
+		pLoc->Release();
+		CoUninitialize();
+		return;
+	}
+
+	// Step 6: Retrieve the data from the query result
+	int counter = 1;
+	IWbemClassObject* pClassObj = NULL;
+	ULONG uReturn = 0;
+	while (pEnumerator) {
+		hres = pEnumerator->Next(WBEM_INFINITE, 1, &pClassObj, &uReturn);
+		if (uReturn == 0)
+			break;
+
+		VARIANT vtProp;
+		hres = pClassObj->Get(L"MemoryType", 0, &vtProp, 0, 0);
+
+		global::info += "RAM bar number: " + std::to_string(counter)+ '\n';
+
+		if (SUCCEEDED(hres)) {
+			// Memory types: https://docs.microsoft.com/en-us/windows/win32/cimwin32prov/win32-physicalmemory
+			std::string memoryType;
+			switch (vtProp.uintVal) {
+			case 0: memoryType = "Unknown"; break;
+			case 1: memoryType = "Other"; break;
+			case 2: memoryType = "DRAM"; break;
+			case 3: memoryType = "Synchronous DRAM"; break;
+			case 4: memoryType = "Cache DRAM"; break;
+			case 5: memoryType = "EDO"; break;
+			case 6: memoryType = "EDRAM"; break;
+			case 7: memoryType = "VRAM"; break;
+			case 8: memoryType = "SRAM"; break;
+			case 9: memoryType = "RAM"; break;
+			case 10: memoryType = "ROM"; break;
+			case 11: memoryType = "Flash"; break;
+			case 12: memoryType = "EEPROM"; break;
+			case 13: memoryType = "FEPROM"; break;
+			case 14: memoryType = "EPROM"; break;
+			case 15: memoryType = "CDRAM"; break;
+			case 16: memoryType = "3DRAM"; break;
+			case 17: memoryType = "SDRAM"; break;
+			case 18: memoryType = "SGRAM"; break;
+			case 19: memoryType = "RDRAM"; break;
+			case 20: memoryType = "DDR"; break;
+			case 21: memoryType = "DDR2"; break;
+			case 22: memoryType = "DDR2 FB-DIMM"; break;
+			case 23: memoryType = "Reserved"; break;
+			case 24: memoryType = "DDR3"; break;
+			case 25: memoryType = "FBD2"; break;
+			case 26: memoryType = "DDR4"; break;
+			case 27: memoryType = "LPDDR"; break;
+			case 28: memoryType = "LPDDR2"; break;
+			case 29: memoryType = "LPDDR3"; break;
+			case 30: memoryType = "LPDDR4"; break;
+			case 31: memoryType = "Logical non-volatile device"; break;
+			default: memoryType = "Unknown"; break;
+			}
+
+			global::info += "  RAM Type: " + memoryType + '\n';
+			VariantClear(&vtProp);
+		}
+
+		hres = pClassObj->Get(L"ConfiguredClockSpeed", 0, &vtProp, 0, 0);
+		if (SUCCEEDED(hres)) {
+			global::info += "  RAM Frequency: " + std::to_string(vtProp.uintVal) + " MHz\n";
+			VariantClear(&vtProp);
+		}
+		counter++;
+		pClassObj->Release();
+	}
+
+	// Step 7: Cleanup
+	pEnumerator->Release();
+	pSvc->Release();
+	pLoc->Release();
+	CoUninitialize();
+
+}
+
+void Drives() {
+
 }
