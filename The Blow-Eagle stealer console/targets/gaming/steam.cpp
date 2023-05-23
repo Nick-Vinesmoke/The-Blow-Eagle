@@ -20,7 +20,7 @@
 */
 
 #include "../targets.h"
-#include "../../config/config.h"
+#include "../../config/config.c"
 #include <Lmcons.h>
 #include <Windows.h>
 #include <string.h>

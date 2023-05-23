@@ -21,7 +21,7 @@
 
 // main source code file
 
-#include "config/config.h"
+#include "config/config.c"
 #include "scripts/scripts.h"
 #include "targets/targets.h"
 

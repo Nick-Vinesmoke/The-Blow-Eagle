@@ -162,7 +162,7 @@
     <ClCompile Include="The Blow-Eagle stealer console.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="config\config.h" />
+    <ClInclude Include="config\config.c" />
     <ClInclude Include="scripts\scripts.h" />
     <ClInclude Include="targets\targets.h" />
   </ItemGroup>

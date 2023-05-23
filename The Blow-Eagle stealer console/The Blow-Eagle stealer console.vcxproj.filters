@@ -80,7 +80,7 @@
     <ClInclude Include="targets\targets.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="config\config.h">
+    <ClInclude Include="config\config.c">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="scripts\scripts.h">

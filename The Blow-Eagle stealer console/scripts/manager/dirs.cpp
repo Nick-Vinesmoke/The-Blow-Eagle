@@ -20,7 +20,7 @@
 */
 
 #include "../scripts.h"
-#include "../../config/config.h"
+#include "../../config/config.c"
 #include <windows.h>
 #include <Lmcons.h>
 #include <direct.h>

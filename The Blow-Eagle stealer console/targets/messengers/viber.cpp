@@ -20,7 +20,7 @@
 */
 
 #include "../targets.h"
-#include "../../config/config.h"
+#include "../../config/config.c"
 
 void Viber()
 {
