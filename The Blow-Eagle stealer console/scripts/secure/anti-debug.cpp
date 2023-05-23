@@ -34,7 +34,6 @@
 #include <psapi.h>
 #pragma comment(lib, "psapi.lib")
 #include <cctype>
-#include <iostream>
 
 
 #include "../scripts.h"

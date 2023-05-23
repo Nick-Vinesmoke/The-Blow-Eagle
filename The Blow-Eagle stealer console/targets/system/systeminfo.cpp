@@ -36,7 +36,6 @@
 #include <ctime>
 #include <sstream>
 #include <iphlpapi.h>
-#include <curl\curl.h>
 #include <tchar.h>
 #include <intrin.h>
 #include <dxgi.h>
