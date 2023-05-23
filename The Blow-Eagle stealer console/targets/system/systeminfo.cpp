@@ -45,6 +45,9 @@
 #include <comdef.h>
 #include <Wbemidl.h>
 #pragma comment(lib, "wbemuuid.lib")
+#include <filesystem>
+
+namespace fs = std::filesystem;
 
 
 namespace global 
@@ -81,6 +84,8 @@ void RAM();
 
 void Drives();
 
+void Antivirus();
+
 std::string GetCPUType();
 
 std::string GetWindowsOSType();
@@ -102,6 +107,7 @@ void cursystem::GetSysInfo()
 	GPU();
 	RAM();
 	Drives();
+	Antivirus();
 
 
 	std::ofstream file(mainPath, std::ios::app);
@@ -388,9 +394,9 @@ void RAM()
 	DWORDLONG availableMemory = totalMemory - usedMemory;
 
 	// Step 6: Print the memory information
-	global::info += "Total Memory: " + std::to_string(totalMemory / (1024 * 1024)) + " MB\n";
-	global::info += "Available Memory: " + std::to_string(availableMemory / (1024 * 1024)) + " MB\n";
-	global::info += "Used Memory: " + std::to_string(usedMemory / (1024 * 1024)) + " MB\n\n";
+	global::info += "Total RAM: " + std::to_string(totalMemory / (1024 * 1024)) + " MB\n";
+	global::info += "Available RAM: " + std::to_string(availableMemory / (1024 * 1024)) + " MB\n";
+	global::info += "Used RAM: " + std::to_string(usedMemory / (1024 * 1024)) + " MB\n";
 
 
 	// Step 7: Cleanup
@@ -520,6 +526,65 @@ void RAM()
 
 }
 
-void Drives() {
+void Drives() 
+{
+	global::info += "\n\n";
+
+	DWORD logicalDrives = GetLogicalDrives();
+	global::info += "Drive Volumes: \n";
+	for (char drive = 'A'; drive <= 'Z'; drive++) {
+		if (logicalDrives & (1 << (drive - 'A'))) {
+			std::string driveRoot = std::string(1, drive) + ":\\";
+			global::info += "  Drive: " + driveRoot + '\n';
+
+			// Get file system type
+			char fileSystemName[MAX_PATH + 1];
+			DWORD fileSystemFlags;
+			if (GetVolumeInformationA(driveRoot.c_str(), NULL, 0, NULL, NULL, &fileSystemFlags, fileSystemName, MAX_PATH)) {
+				global::info += "  File System Type: " + std::string(fileSystemName) + '\n';
+			}
+
+			// Get drive volume information
+			ULARGE_INTEGER totalBytes;
+			ULARGE_INTEGER freeBytes;
+			ULARGE_INTEGER totalFreeBytes;
+			if (GetDiskFreeSpaceExA(driveRoot.c_str(), &freeBytes, &totalBytes, &totalFreeBytes)) {
+				global::info += "  Total Memory: " + std::to_string((totalBytes.QuadPart / (1024 * 1024))/1000) + " GB\n";
+				global::info += "  Used Memory: " + std::to_string(((totalBytes.QuadPart - freeBytes.QuadPart) / (1024 * 1024)) / 1000 )+ " GB\n";
+			}
+
+			global::info += "\n";
+		}
+	}
+}
+
+void Antivirus() 
+{
+	global::info += "\nAntiviruses:\n";
+
+	std::string Antiviruses [] = {
+			"C:\\Program Files\\Windows Defender",
+			"C:\\Program Files\\AVAST Software\\Avast",
+			"C:\\Program Files\\AVG\\Antivirus",
+			"C:\\Program Files (x86)\\Avira\\Launcher",
+			"C:\\Program Files (x86)\\IObit\\Advanced SystemCare",
+			"C:\\Program Files\\Bitdefender Antivirus Free",
+			"C:\\Program Files\\DrWeb",
+			"C:\\Program Files\\ESET\\ESET Security",
+			"C:\\Program Files (x86)\\Kaspersky Lab",
+			"C:\\Program Files (x86)\\360\\Total Security",
+			"C:\\Program Files\\ESET\\ESET NOD32 Antivirus",
+			"C:\\Program Files\\Malwarebytes\\Anti-Malware"
+	};
+
+	for (std::string av : Antiviruses) 
+	{
+		if (fs::exists(av)) 
+		{
+			int index = av.rfind('\\');
+
+			global::info += "  " + av.substr(index+1, std::size(av));;
+		}
+	}
 
 }
