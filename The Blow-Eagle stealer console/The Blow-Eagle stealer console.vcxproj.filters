@@ -88,11 +88,13 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="config\properties.rs" />
-  </ItemGroup>
-  <ItemGroup>
     <ResourceCompile Include="config\AssemblyInfo.rc">
       <Filter>Файлы ресурсов</Filter>
     </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="config\icon.ico">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
   </ItemGroup>
 </Project>

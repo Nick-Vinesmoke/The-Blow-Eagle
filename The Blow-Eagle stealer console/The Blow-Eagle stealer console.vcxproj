@@ -167,10 +167,10 @@
     <ClInclude Include="targets\targets.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="config\properties.rs" />
+    <ResourceCompile Include="config\AssemblyInfo.rc" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="config\AssemblyInfo.rc" />
+    <Image Include="config\icon.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
