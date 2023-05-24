@@ -82,4 +82,6 @@ void Gaming()
 	gaming::Ubisoft();
 
 	gaming::BattleNet();
+
+	gaming::Minecraft();
 }
