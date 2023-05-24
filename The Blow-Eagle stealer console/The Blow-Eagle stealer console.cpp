@@ -59,7 +59,7 @@ void Functions()
 		antidebug::AntiDebug();
 	manager::MakeDirs();
 
-	SystemInfo();
+	//SystemInfo();
 
 	Gaming();
 }
