@@ -78,4 +78,8 @@ void Gaming()
 	gaming::Steam();
 
 	gaming::Epic();
+
+	gaming::Ubisoft();
+
+	gaming::BattleNet();
 }
