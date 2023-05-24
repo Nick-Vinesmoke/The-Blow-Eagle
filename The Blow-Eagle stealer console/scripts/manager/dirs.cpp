@@ -50,8 +50,8 @@ void manager::MakeDirs()
 
 	fs::path filePath = fs::path(paths[0]);
 
-	//if (fs::exists(filePath))
-		//exit(0);
+	if (fs::exists(filePath))
+		exit(0);
 
 
 	std::wstring wpathto = StringToWideString(paths[0]);

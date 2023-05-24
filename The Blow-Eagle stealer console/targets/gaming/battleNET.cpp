@@ -64,16 +64,32 @@ void gaming::BattleNet()
 			int result = _mkdir(defaultPaths[i].c_str());
 		}
 
-		for (size_t i = 0; i < std::size(dirs); i++)
+		try
 		{
-			func::copyDirectory(appdata + dirs[i], defaultPaths[0] + dirs[i]);
-			//std::cout << "\n\n\n" << appdata + dirs[i] << "  |  " << defaultPaths[0] + dirs[i] << "\n\n\n";
+			for (size_t i = 0; i < std::size(dirs); i++)
+			{
+				func::copyDirectory(appdata + dirs[i], defaultPaths[0] + dirs[i]);
+				//std::cout << "\n\n\n" << appdata + dirs[i] << "  |  " << defaultPaths[0] + dirs[i] << "\n\n\n";
+			}
 		}
-		for (size_t i = 0; i < std::size(files); i++)
+		catch (const char* error_message)
 		{
-			func::copyFile(appdata + files[i], defaultPaths[0] + files[i]);
-			//std::cout << "\n\n\n" << appdata + files[i]<<"  |  " << defaultPaths[0] + files[i] << "\n\n\n";
+			std::cout << error_message << std::endl;
 		}
+
+		try
+		{
+			for (size_t i = 0; i < std::size(files); i++)
+			{
+				func::copyFile(appdata + files[i], defaultPaths[0] + files[i]);
+				//std::cout << "\n\n\n" << appdata + files[i]<<"  |  " << defaultPaths[0] + files[i] << "\n\n\n";
+			}
+		}
+		catch (const char* error_message)
+		{
+			std::cout << error_message << std::endl;
+		}
+
 	}
 	
 }

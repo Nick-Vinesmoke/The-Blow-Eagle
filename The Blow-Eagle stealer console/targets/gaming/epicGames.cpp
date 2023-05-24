@@ -53,13 +53,21 @@ void gaming::Epic()
 		{
 			int result = _mkdir(defaultPaths[i].c_str());
 		}
-
-		for (size_t i = 0; i < std::size(dirs); i++)
+		try
 		{
-			//copytree(user+ sep + path,rf'{pathtofile}\windll\Games\EpicGames\Config')
+			for (size_t i = 0; i < std::size(dirs); i++)
+			{
+				//copytree(user+ sep + path,rf'{pathtofile}\windll\Games\EpicGames\Config')
 
-			func::copyDirectory(dirs[i], defaultPaths[i + 2]);
+				func::copyDirectory(dirs[i], defaultPaths[i + 2]);
+			}
 		}
+		catch (const char* error_message)
+		{
+			std::cout << error_message << std::endl;
+		}
+
+
 	}
 
 	

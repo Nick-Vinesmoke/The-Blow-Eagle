@@ -43,17 +43,25 @@ void gaming::Ubisoft()
 		"C:/Users/" + user + config::path + "/Games/Ubisoft",
 
 		};
-
+		
 		for (size_t i = 0; i < std::size(defaultPaths); i++)
 		{
 			int result = _mkdir(defaultPaths[i].c_str());
 		}
 
-		for (size_t i = 0; i < std::size(dirs); i++)
+		try
 		{
+			for (size_t i = 0; i < std::size(dirs); i++)
+			{
 
-			func::copyDirectory(dirs[i], defaultPaths[1]);
+				func::copyDirectory(dirs[i], defaultPaths[1]);
+			}
 		}
+		catch (const char* error_message)
+		{
+			std::cout << error_message << std::endl;
+		}
+
 	}
 
 	

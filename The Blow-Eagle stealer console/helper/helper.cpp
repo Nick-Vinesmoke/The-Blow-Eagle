@@ -60,6 +60,49 @@ std::string func::GetUser()
 	return userName;
 }
 
+
+void func::GetDirectories(const std::string& directoryPath, std::string*& arr, int& arrSize)
+{
+	std::vector<std::string> directories;
+
+	std::string searchPath = directoryPath + "\\*";
+
+	WIN32_FIND_DATAA findData;
+	HANDLE hFind = FindFirstFileA(searchPath.c_str(), &findData);
+
+	if (hFind != INVALID_HANDLE_VALUE)
+	{
+		do
+		{
+			if (findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
+			{
+				std::string directoryName = findData.cFileName;
+
+				// Exclude current directory (.) and parent directory (..)
+				if (directoryName != "." && directoryName != "..")
+				{
+					std::string* arr2 = new std::string[arrSize + 1];
+					for (size_t i = 0; i < arrSize; i++)
+					{
+						arr2[i] = arr[i];
+					}
+					arr2[arrSize] = directoryName;
+					arrSize++;
+					arr = new std::string[arrSize];
+					for (size_t i = 0; i < arrSize; i++)
+					{
+						arr[i] = arr2[i];
+					}
+					delete[] arr2;
+				}
+			}
+		} while (FindNextFileA(hFind, &findData));
+
+		FindClose(hFind);
+	}
+
+}
+
 void func::copyDirectory(const std::filesystem::path& sourceDir, const std::filesystem::path& destinationDir) {
 	try
 	{

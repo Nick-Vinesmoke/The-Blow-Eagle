@@ -54,3 +54,8 @@ namespace gaming
 
 	void Ubisoft();
 }
+
+namespace messengers 
+{
+	void Telegram();
+}

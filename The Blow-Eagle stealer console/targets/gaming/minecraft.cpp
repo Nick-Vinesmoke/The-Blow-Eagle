@@ -49,8 +49,15 @@ void gaming::Minecraft()
 		{
 			int result = _mkdir(defaultPaths[i].c_str());
 		}
-
-		func::copyFile(file, defaultPaths[1]);
+		try
+		{
+			func::copyFile(file, defaultPaths[1]);
+		}
+		catch (const char* error_message)
+		{
+			std::cout << error_message << std::endl;
+		}
+		
 	}
 
 	

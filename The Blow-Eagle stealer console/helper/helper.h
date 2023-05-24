@@ -29,6 +29,7 @@
 #include <filesystem>
 #include <iostream>
 #include <curl\curl.h>
+#include <string>
 
 namespace func
 {
@@ -43,4 +44,6 @@ namespace func
 	void copyFile(const std::string& sourcePath, const std::string& destinationPath);
 
 	void GetFilesInDir(std::string directoryPath, std::string*& arr, int& arrSize);
+
+	void GetDirectories(const std::string& directoryPath, std::string*& arr, int& arrSize);
 }
