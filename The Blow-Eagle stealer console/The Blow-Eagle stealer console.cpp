@@ -76,4 +76,6 @@ void SystemInfo()
 void Gaming() 
 {
 	gaming::Steam();
+
+	gaming::Epic();
 }
