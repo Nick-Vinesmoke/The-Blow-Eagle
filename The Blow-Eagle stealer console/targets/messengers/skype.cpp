@@ -28,7 +28,7 @@
 
 void messengers::Skype()
 {
-	printf("Skype/n");
+	printf("Skype\n");
 
 	std::string user = func::GetUser();
 

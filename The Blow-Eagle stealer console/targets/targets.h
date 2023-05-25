@@ -62,4 +62,6 @@ namespace messengers
 	void Discord();
 
 	void Skype();
+
+	void Viber();
 }

@@ -97,4 +97,6 @@ void Messengers()
 	messengers::Discord();
 
 	messengers::Skype();
+
+	messengers::Viber();
 }
