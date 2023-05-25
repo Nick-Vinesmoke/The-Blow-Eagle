@@ -58,4 +58,6 @@ namespace gaming
 namespace messengers 
 {
 	void Telegram();
+
+	void Discord();
 }

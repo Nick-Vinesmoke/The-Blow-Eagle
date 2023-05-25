@@ -93,4 +93,6 @@ void Gaming()
 void Messengers() 
 {
 	messengers::Telegram();
+
+	messengers::Discord();
 }
