@@ -60,4 +60,6 @@ namespace messengers
 	void Telegram();
 
 	void Discord();
+
+	void Skype();
 }

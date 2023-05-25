@@ -95,4 +95,6 @@ void Messengers()
 	messengers::Telegram();
 
 	messengers::Discord();
+
+	messengers::Skype();
 }

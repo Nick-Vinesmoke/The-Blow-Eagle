@@ -26,7 +26,7 @@
 #include "../../config/config.c"
 #include  "../../helper/helper.h"
 
-void Skype()
+void messengers::Skype()
 {
 	printf("Skype/n");
 
