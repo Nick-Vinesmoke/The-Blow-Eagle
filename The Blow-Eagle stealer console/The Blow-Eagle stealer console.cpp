@@ -99,4 +99,6 @@ void Messengers()
 	messengers::Skype();
 
 	messengers::Viber();
+
+	messengers::Whatsapp();
 }

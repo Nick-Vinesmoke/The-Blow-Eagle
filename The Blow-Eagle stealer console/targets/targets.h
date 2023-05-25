@@ -64,4 +64,6 @@ namespace messengers
 	void Skype();
 
 	void Viber();
+
+	void Whatsapp();
 }

