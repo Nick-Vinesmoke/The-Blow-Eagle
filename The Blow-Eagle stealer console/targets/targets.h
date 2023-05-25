@@ -70,7 +70,7 @@ namespace messengers
 
 namespace wallets
 {
-
+	void Wallets();
 }
 
 namespace images

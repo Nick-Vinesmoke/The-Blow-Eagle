@@ -31,7 +31,7 @@
 
 void images::Screenshot() 
 {
-    printf("shoot");
+    printf("shoot\n");
 
     try {
         std::string user = func::GetUser();
