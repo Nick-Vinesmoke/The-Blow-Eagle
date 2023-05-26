@@ -27,7 +27,7 @@
 #include "../../helper/helper.hpp"
 #include <fstream>
 #include <vector>
-#include <sqlite3.h>
+#include "../../dependencies/sqlite/sqlite3.h"
 
 
 namespace global 
