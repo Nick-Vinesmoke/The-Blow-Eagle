@@ -21,8 +21,8 @@
 |Original repo: https://github.com/Nick-Vinesmoke/The-Blow-Eagle|
 -----------------------------------------------------------------
 */
-#include "../targets.h"
-#include "../../config/config.c"
+#include "../targets.hpp"
+#include "../../config/config.cpp"
 
 #include <windows.h>
 #include <tlhelp32.h>

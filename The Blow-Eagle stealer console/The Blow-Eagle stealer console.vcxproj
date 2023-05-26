@@ -140,6 +140,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="config\config.cpp" />
     <ClCompile Include="helper\helper.cpp" />
     <ClCompile Include="scripts\manager\dirs.cpp" />
     <ClCompile Include="scripts\secure\anti-debug.cpp" />
@@ -164,16 +165,15 @@
     <ClCompile Include="The Blow-Eagle stealer console.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="config\config.c" />
-    <ClInclude Include="helper\helper.h" />
-    <ClInclude Include="scripts\scripts.h" />
-    <ClInclude Include="targets\targets.h" />
-  </ItemGroup>
-  <ItemGroup>
     <ResourceCompile Include="config\AssemblyInfo.rc" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="config\icon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="helper\helper.hpp" />
+    <ClInclude Include="scripts\scripts.hpp" />
+    <ClInclude Include="targets\targets.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
