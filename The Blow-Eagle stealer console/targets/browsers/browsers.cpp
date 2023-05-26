@@ -195,6 +195,7 @@ int GetCookies(std::string path, std::string profile)
         std::string value = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 2));
         std::string domain = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 5));
 
+        // C:\Users\darkd\AppData\Local\Google\Chrome\User Data\Local State
         std::string domainDec = "";
 
         // Write the cookie details to the file
