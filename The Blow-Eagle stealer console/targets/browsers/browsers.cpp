@@ -33,18 +33,6 @@
 
 
 
-#include <sodium.h>
-#include <windows.h>
-#include <wincrypt.h>
-#include <openssl/aes.h>
-#include <openssl/conf.h>
-#include <openssl/evp.h>
-#include <openssl/err.h>
-#include "DecryptionHandler.h"
-#include "json.hpp"
-
-
-
 namespace global 
 {
     std::string user = func::GetUser();
