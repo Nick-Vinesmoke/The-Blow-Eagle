@@ -97,13 +97,25 @@ void GetFiles(std::vector<std::string> volumes, std::vector<std::string> default
 
         std::vector<std::string> filePathsTXT;
 
+        std::vector<std::string> filePathsDOCX;
+
         func::GetFilePaths(volume, filePathsTXT, ".txt");
+
+        func::GetFilePaths(volume, filePathsDOCX, ".docx");
 
         int counter = 0;
         for (const std::string& fileTxt : filePathsTXT)
         {
             func::copyFile(fileTxt, savePath + "/" + getFileNameWithoutExtension(fileTxt) + '_' + std::to_string(counter) + ".txt");
             counter++;
+        }
+
+        int counter1 = 0;
+        for (const std::string& fileDocx : filePathsDOCX)
+        {
+            std::cout << fileDocx << "\n\n";
+            func::copyFile(fileDocx, savePath + "/" + getFileNameWithoutExtension(fileDocx) + '_' + std::to_string(counter1) + ".docx");
+            counter1++;
         }
     }
 }

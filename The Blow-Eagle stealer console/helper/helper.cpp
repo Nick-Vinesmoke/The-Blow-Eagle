@@ -73,7 +73,7 @@ void func::GetFilePaths(const std::string& directory, std::vector<std::string>& 
 			else
 			{
 				std::string filePath = directory + "\\" + fileData.cFileName;
-				if (filePath.substr(filePath.length() - 4) == ext)
+				if (filePath.substr(filePath.length() - std::size(ext)) == ext)
 				{
 					filePaths.push_back(filePath);
 				}
