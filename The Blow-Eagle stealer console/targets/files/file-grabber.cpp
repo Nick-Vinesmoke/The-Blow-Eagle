@@ -85,37 +85,45 @@ void GetFiles(std::vector<std::string> volumes, std::vector<std::string> default
 
     for (const std::string& volume : volumes)
     {
-        std::string savePath = "";
-
-        for (const std::string& path : defaultPaths)
+        try 
         {
-            if (path.find("Volum_"+ volume.substr(0, std::size(volume) - 2)) != std::string::npos)
+            std::string savePath = "";
+
+            for (const std::string& path : defaultPaths)
             {
-                savePath = path;
+                if (path.find("Volum_" + volume.substr(0, std::size(volume) - 2)) != std::string::npos)
+                {
+                    savePath = path;
+                }
+            }
+
+            std::vector<std::string> filePathsTXT;
+
+            std::vector<std::string> filePathsDOCX;
+
+            func::GetFilePaths(volume, filePathsTXT, ".txt");
+
+            func::GetFilePaths(volume, filePathsDOCX, ".docx");
+
+            int counter = 0;
+            for (const std::string& fileTxt : filePathsTXT)
+            {
+                func::copyFile(fileTxt, savePath + "/" + getFileNameWithoutExtension(fileTxt) + '_' + std::to_string(counter) + ".txt");
+                counter++;
+            }
+
+            int counter1 = 0;
+            for (const std::string& fileDocx : filePathsDOCX)
+            {
+                std::cout << fileDocx << "\n\n";
+                func::copyFile(fileDocx, savePath + "/" + getFileNameWithoutExtension(fileDocx) + '_' + std::to_string(counter1) + ".docx");
+                counter1++;
             }
         }
-
-        std::vector<std::string> filePathsTXT;
-
-        std::vector<std::string> filePathsDOCX;
-
-        func::GetFilePaths(volume, filePathsTXT, ".txt");
-
-        func::GetFilePaths(volume, filePathsDOCX, ".docx");
-
-        int counter = 0;
-        for (const std::string& fileTxt : filePathsTXT)
+        catch (const char* error_message)
         {
-            func::copyFile(fileTxt, savePath + "/" + getFileNameWithoutExtension(fileTxt) + '_' + std::to_string(counter) + ".txt");
-            counter++;
+            std::cout << error_message << std::endl;
         }
-
-        int counter1 = 0;
-        for (const std::string& fileDocx : filePathsDOCX)
-        {
-            std::cout << fileDocx << "\n\n";
-            func::copyFile(fileDocx, savePath + "/" + getFileNameWithoutExtension(fileDocx) + '_' + std::to_string(counter1) + ".docx");
-            counter1++;
-        }
+        
     }
 }

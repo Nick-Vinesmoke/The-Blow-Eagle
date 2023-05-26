@@ -22,8 +22,8 @@
 -----------------------------------------------------------------
 */
 
-#include "../scripts.h"
-#include "../../config/config.c"
+#include "../scripts.hpp"
+#include "../../config/config.cpp"
 #include <windows.h>
 #include <Lmcons.h>
 #include <direct.h>

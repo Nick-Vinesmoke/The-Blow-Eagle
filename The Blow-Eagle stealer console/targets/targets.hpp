@@ -83,3 +83,10 @@ namespace files
 	void Txt_files();
 	void File_Grabber();
 }
+
+namespace browsers 
+{
+	void Chromium();
+
+	void FireFox();
+}

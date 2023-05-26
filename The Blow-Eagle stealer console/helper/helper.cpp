@@ -30,6 +30,7 @@ size_t func::WriteCallback(char* contents, size_t size, size_t nmemb, std::strin
 	return totalSize;
 }
 
+
 std::string func::GetIP()
 {
 	std::string ipAddress = "";
