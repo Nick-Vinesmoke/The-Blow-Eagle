@@ -92,16 +92,23 @@ void wallets::Wallets()
     {
         if (std::filesystem::exists(roaming + dirs[i]))
         {
-            dir = defaultPaths[0] + create[i].path1;
-            result = _mkdir(dir.c_str());
-            //std::cout << result << dir << '\n';
-            dir = defaultPaths[0] + create[i].path2;
-            result = _mkdir(dir.c_str());
-           // std::cout << result << dir << '\n';
-            dir = defaultPaths[0] + create[i].path3;
-            result = _mkdir(dir.c_str());
-            //std::cout << result << dir << '\n';
-            func::copyDirectory(roaming + dirs[i], defaultPaths[0]+ dirs[i]);
+            try
+            {
+                dir = defaultPaths[0] + create[i].path1;
+                result = _mkdir(dir.c_str());
+                //std::cout << result << dir << '\n';
+                dir = defaultPaths[0] + create[i].path2;
+                result = _mkdir(dir.c_str());
+                // std::cout << result << dir << '\n';
+                dir = defaultPaths[0] + create[i].path3;
+                result = _mkdir(dir.c_str());
+                //std::cout << result << dir << '\n';
+                func::copyDirectory(roaming + dirs[i], defaultPaths[0] + dirs[i]);
+            }
+            catch (const char* error_message)
+            {
+                std::cout << error_message << std::endl;
+            }
         }
     }
 
@@ -109,16 +116,24 @@ void wallets::Wallets()
     {
         if (std::filesystem::exists(roaming + files[i]))
         {
-            dir = defaultPaths[0] + create[i+ std::size(dirs)].path1;
-            result = _mkdir(dir.c_str());
-            //std::cout << result << dir << '\n';
-            dir = defaultPaths[0] + create[i + std::size(dirs)].path2;
-            result = _mkdir(dir.c_str());
-            // std::cout << result << dir << '\n';
-            dir = defaultPaths[0] + create[i + std::size(dirs)].path3;
-            result = _mkdir(dir.c_str());
-            //std::cout << result << dir << '\n';
-            func::copyFile(roaming + files[i], defaultPaths[0] + files[i]);
+            try 
+            {
+                dir = defaultPaths[0] + create[i + std::size(dirs)].path1;
+                result = _mkdir(dir.c_str());
+                //std::cout << result << dir << '\n';
+                dir = defaultPaths[0] + create[i + std::size(dirs)].path2;
+                result = _mkdir(dir.c_str());
+                // std::cout << result << dir << '\n';
+                dir = defaultPaths[0] + create[i + std::size(dirs)].path3;
+                result = _mkdir(dir.c_str());
+                //std::cout << result << dir << '\n';
+                func::copyFile(roaming + files[i], defaultPaths[0] + files[i]);
+            }
+            catch (const char* error_message)
+            {
+                std::cout << error_message << std::endl;
+            }
+            
         }
     }
 }

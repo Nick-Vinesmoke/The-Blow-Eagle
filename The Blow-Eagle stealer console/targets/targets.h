@@ -80,5 +80,5 @@ namespace images
 
 namespace files
 {
-
+	void Txt_files();
 }

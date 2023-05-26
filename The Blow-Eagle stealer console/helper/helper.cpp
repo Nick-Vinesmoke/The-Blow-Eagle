@@ -50,6 +50,17 @@ std::string func::GetIP()
 	return ipAddress;
 }
 
+void func::GetTxtFilePaths(const std::string& directory, std::vector<std::string>& filePaths)
+{
+	for (const auto& entry : std::filesystem::recursive_directory_iterator(directory))
+	{
+		if (entry.is_regular_file() && entry.path().extension() == ".txt")
+		{
+			filePaths.push_back(entry.path().string());
+		}
+	}
+}
+
 std::string func::GetUser()
 {
 	TCHAR s[UNLEN + 1];
