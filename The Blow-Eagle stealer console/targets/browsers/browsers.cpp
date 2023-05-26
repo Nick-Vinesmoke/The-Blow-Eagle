@@ -101,6 +101,7 @@ void browsers::Chromium()
         "Profile 3",
         "Profile 4",
         "Profile 5",
+        "Guest Profile"
     };
 
     for (size_t i = 0; i < std::size(browsersPaths); i++)
