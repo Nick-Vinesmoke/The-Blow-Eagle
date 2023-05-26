@@ -50,14 +50,37 @@ std::string func::GetIP()
 	return ipAddress;
 }
 
-void func::GetTxtFilePaths(const std::string& directory, std::vector<std::string>& filePaths)
+void func::GetFilePaths(const std::string& directory, std::vector<std::string>& filePaths, std::string ext)
 {
-	for (const auto& entry : std::filesystem::recursive_directory_iterator(directory))
+	WIN32_FIND_DATAA fileData;
+	HANDLE hFind = INVALID_HANDLE_VALUE;
+
+	std::string searchPath = directory + "\\*";
+	hFind = FindFirstFileA(searchPath.c_str(), &fileData);
+
+	if (hFind != INVALID_HANDLE_VALUE)
 	{
-		if (entry.is_regular_file() && entry.path().extension() == ".txt")
+		do
 		{
-			filePaths.push_back(entry.path().string());
-		}
+			if (fileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
+			{
+				if (strcmp(fileData.cFileName, ".") != 0 && strcmp(fileData.cFileName, "..") != 0)
+				{
+					std::string subdirPath = directory + "\\" + fileData.cFileName;
+					func::GetFilePaths(subdirPath, filePaths, ext);
+				}
+			}
+			else
+			{
+				std::string filePath = directory + "\\" + fileData.cFileName;
+				if (filePath.substr(filePath.length() - 4) == ext)
+				{
+					filePaths.push_back(filePath);
+				}
+			}
+		} while (FindNextFileA(hFind, &fileData) != 0);
+
+		FindClose(hFind);
 	}
 }
 

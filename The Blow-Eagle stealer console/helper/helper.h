@@ -39,7 +39,7 @@ namespace func
 
 	std::string GetUser();
 
-	void GetTxtFilePaths(const std::string& directory, std::vector<std::string>& filePaths);
+	void GetFilePaths(const std::string& directory, std::vector<std::string>& filePaths, std::string ext);
 
 	void copyDirectory(const std::filesystem::path& sourceDir, const std::filesystem::path& destinationDir);
 

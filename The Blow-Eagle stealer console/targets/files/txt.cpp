@@ -27,6 +27,19 @@
 #include  "../../helper/helper.h"
 
 
+std::string getFileNameWithoutExtension(const std::string& filePath)
+{
+	size_t lastSlashIndex = filePath.find_last_of("\\/");
+	size_t lastDotIndex = filePath.find_last_of(".");
+
+	if (lastDotIndex != std::string::npos && lastDotIndex > lastSlashIndex)
+	{
+		return filePath.substr(lastSlashIndex + 1, lastDotIndex - lastSlashIndex - 1);
+	}
+
+	return "";
+}
+
 void files::Txt_files()
 {
 	printf("Txt_files\n");
@@ -64,12 +77,13 @@ void files::Txt_files()
 		{
 			try 
 			{
-				func::GetTxtFilePaths("C:/Users/" + user + dirs[i], filePaths);
+				func::GetFilePaths("C:/Users/" + user + dirs[i], filePaths, ".txt");
 
-
+				int counter = 0;
 				for (const std::string& filePath : filePaths)
 				{
-					func::copyFile(filePath, defaultPaths[0] + dirs[i]);
+					func::copyFile(filePath, defaultPaths[0] + dirs[i] + "/" + getFileNameWithoutExtension(filePath) + '_' + std::to_string(counter) + ".txt");
+					counter++;
 				}
 			}
 			catch (const char* error_message)
