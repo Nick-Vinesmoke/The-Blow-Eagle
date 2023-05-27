@@ -36,8 +36,8 @@
 #include <cctype>
 
 
-#include "../scripts.hpp"
-#include  "../../helper/helper.hpp"
+#include "../scripts.h"
+#include  "../../helper/helper.h"
 
 /// <summary>
 /// check if the current user in blacklist

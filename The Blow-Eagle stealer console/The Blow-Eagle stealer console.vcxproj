@@ -140,7 +140,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="config\config.cpp" />
+    <ClCompile Include="config\config.c" />
     <ClCompile Include="dependencies\sqlite\shell.c" />
     <ClCompile Include="dependencies\sqlite\sqlite3.c" />
     <ClCompile Include="helper\helper.cpp" />
@@ -175,9 +175,9 @@
   <ItemGroup>
     <ClInclude Include="dependencies\sqlite\sqlite3.h" />
     <ClInclude Include="dependencies\sqlite\sqlite3ext.h" />
-    <ClInclude Include="helper\helper.hpp" />
-    <ClInclude Include="scripts\scripts.hpp" />
-    <ClInclude Include="targets\targets.hpp" />
+    <ClInclude Include="helper\helper.h" />
+    <ClInclude Include="scripts\scripts.h" />
+    <ClInclude Include="targets\targets.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

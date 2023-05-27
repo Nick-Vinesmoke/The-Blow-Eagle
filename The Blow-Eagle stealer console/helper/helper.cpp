@@ -22,7 +22,7 @@
 -----------------------------------------------------------------
 */
 
-#include "helper.hpp"
+#include "helper.h"
 
 size_t func::WriteCallback(char* contents, size_t size, size_t nmemb, std::string* output) {
 	size_t totalSize = size * nmemb;

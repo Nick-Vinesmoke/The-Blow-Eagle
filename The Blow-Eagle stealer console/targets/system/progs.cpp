@@ -22,8 +22,8 @@
 -----------------------------------------------------------------
 */
 
-#include "../targets.hpp"
-#include "../../config/config.cpp"
+#include "../targets.h"
+#include "../../config/config.c"
 
 #include <windows.h>
 #include <tlhelp32.h>

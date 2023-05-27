@@ -22,9 +22,9 @@
 -----------------------------------------------------------------
 */
 
-#include "../targets.hpp"
-#include "../../config/config.cpp"
-#include  "../../helper/helper.hpp"
+#include "../targets.h"
+#include "../../config/config.c"
+#include  "../../helper/helper.h"
 
 void messengers::Whatsapp()
 {

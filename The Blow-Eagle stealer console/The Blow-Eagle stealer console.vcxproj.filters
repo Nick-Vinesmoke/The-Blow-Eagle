@@ -81,13 +81,13 @@
     <ClCompile Include="targets\images\screenshot.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="config\config.cpp">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
     <ClCompile Include="dependencies\sqlite\shell.c">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
     <ClCompile Include="dependencies\sqlite\sqlite3.c">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="config\config.c">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>
@@ -102,19 +102,19 @@
     </Image>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="targets\targets.hpp">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="scripts\scripts.hpp">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="helper\helper.hpp">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
     <ClInclude Include="dependencies\sqlite\sqlite3.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="dependencies\sqlite\sqlite3ext.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="scripts\scripts.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="targets\targets.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="helper\helper.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>
