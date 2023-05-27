@@ -87,9 +87,6 @@
     <ClCompile Include="dependencies\sqlite\sqlite3.c">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="config\config.c">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="config\AssemblyInfo.rc">

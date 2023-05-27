@@ -140,7 +140,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="config\config.c" />
     <ClCompile Include="dependencies\sqlite\shell.c" />
     <ClCompile Include="dependencies\sqlite\sqlite3.c" />
     <ClCompile Include="helper\helper.cpp" />

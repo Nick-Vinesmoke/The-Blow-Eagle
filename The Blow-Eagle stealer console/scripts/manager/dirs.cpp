@@ -22,7 +22,7 @@
 -----------------------------------------------------------------
 */
 
-#include "../scripts.hpp"
+#include "../scripts.h"
 #include "../../config/config.cpp"
 #include <windows.h>
 #include <Lmcons.h>

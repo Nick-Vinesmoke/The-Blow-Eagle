@@ -23,7 +23,7 @@
 */
 
 #include "../targets.h"
-#include "../../config/config.c"
+#include "../../config/config.cpp"
 #include  "../../helper/helper.h"
 
 std::string getFileNameWithoutExtension(const std::string& filePath);
