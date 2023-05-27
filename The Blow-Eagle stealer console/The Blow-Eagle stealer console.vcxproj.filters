@@ -90,9 +90,6 @@
     <ClCompile Include="dependencies\sqlite\sqlite3.c">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="targets\browsers\crypto.cpp">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="config\AssemblyInfo.rc">
@@ -118,9 +115,6 @@
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="dependencies\sqlite\sqlite3ext.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="targets\browsers\crypto.hpp">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>
