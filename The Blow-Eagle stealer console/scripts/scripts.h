@@ -24,7 +24,6 @@
 
 // header for access to dir scripts
 
-
 namespace antidebug {
 	/// <summary>
 	/// checks if reverse-debugging is doing on the program
@@ -37,4 +36,6 @@ namespace manager {
 	/// make needed dirs
 	/// </summary>
 	void MakeDirs();
+
+	int MakeZip();
 }

