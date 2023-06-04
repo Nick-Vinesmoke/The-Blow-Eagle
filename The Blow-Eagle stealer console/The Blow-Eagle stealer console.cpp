@@ -22,6 +22,8 @@
 -----------------------------------------------------------------
 */
 
+//std:c++17
+
 // main source code file
 
 #include "config/config.cpp"
