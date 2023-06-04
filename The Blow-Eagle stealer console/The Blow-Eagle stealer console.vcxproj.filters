@@ -37,6 +37,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="ending">
+      <UniqueIdentifier>{ec28014e-1df1-445c-bf0d-f5277ec8043c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="The Blow-Eagle stealer console.cpp">
@@ -107,6 +110,12 @@
     </ClCompile>
     <ClCompile Include="targets\images\screenshot.cpp">
       <Filter>other</Filter>
+    </ClCompile>
+    <ClCompile Include="scripts\manager\zip.cpp">
+      <Filter>ending</Filter>
+    </ClCompile>
+    <ClCompile Include="scripts\manager\send.cpp">
+      <Filter>ending</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
