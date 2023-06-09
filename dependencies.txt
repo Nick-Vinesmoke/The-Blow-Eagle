@@ -1,1 +1,2 @@
 curl(https://curl.se/download.html)
+sodium(https://libsodium.gitbook.io)
