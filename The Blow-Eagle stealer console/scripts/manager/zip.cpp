@@ -25,7 +25,7 @@
 #include "../scripts.h"
 #include "../../config/config.cpp"
 #include "../../helper/helper.h"
-
+/*
 #include <zip.h>
 
 
@@ -103,7 +103,7 @@ int manager::MakeZip()
 }
 
 
-
+*/
 
 
 /*
