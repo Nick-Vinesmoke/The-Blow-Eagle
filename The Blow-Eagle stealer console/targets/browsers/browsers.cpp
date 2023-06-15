@@ -28,7 +28,8 @@
 #include <fstream>
 #include <vector>
 #include <openssl/evp.h>
-#include <nlohmann/json.hpp>
+#include "../../dependencies/json.hpp"
+#include "../../dependencies/sqlite-amalgamation-3420000/sqlite3.h"
 #include <string>
 #include <windows.h>
 #include <io.h>
