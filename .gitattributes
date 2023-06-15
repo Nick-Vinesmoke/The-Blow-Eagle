@@ -6,3 +6,5 @@
 *.rc linguist-language=Shell
 
 The Blow-Eagle stealer console/dependencies/*		linguist-vendored=false
+
+curl.h linguist-vendored=false
