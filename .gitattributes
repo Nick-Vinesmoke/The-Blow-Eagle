@@ -5,4 +5,4 @@
 *.h linguist-language=C
 *.rc linguist-language=Shell
 
-The-Blow-Eagle-stealer/dependencies/*		linguist-vendored
+The-Blow-Eagle-stealer/dependencies/curl/include/curl*		linguist-vendored
