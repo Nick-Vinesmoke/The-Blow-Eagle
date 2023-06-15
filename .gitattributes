@@ -5,4 +5,4 @@
 *.h linguist-language=C
 *.rc linguist-language=Shell
 
-/dependencies/*		export-ignore
+dependencies/*		linguist-vendored
