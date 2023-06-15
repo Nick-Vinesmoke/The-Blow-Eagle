@@ -20,7 +20,7 @@
 |Autor github: https://github.com/Nick-Vinesmoke                |
 |Original repo: https://github.com/Nick-Vinesmoke/The-Blow-Eagle|
 -----------------------------------------------------------------
-*/
+
 
 #include "../targets.h"
 #include "../../config/config.cpp"
@@ -625,3 +625,4 @@ void browsers::FireFox()
 }
 
 
+*/

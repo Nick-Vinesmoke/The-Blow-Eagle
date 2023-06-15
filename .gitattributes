@@ -6,4 +6,3 @@
 *.rc linguist-language=Shell
 
 The-Blow-Eagle-stealer/dependencies/*		linguist-vendored
-The Blow-Eagle stealer console/dependencies/*		linguist-vendored

