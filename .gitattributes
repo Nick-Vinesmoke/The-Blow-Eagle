@@ -3,4 +3,4 @@
 *.cs linguist-language=csharp
 *.cpp linguist-language=C++
 *.h linguist-language=C
-*.rc linguist-language=Other
+*.rc linguist-language=Shell
