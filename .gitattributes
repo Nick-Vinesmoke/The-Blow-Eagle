@@ -4,3 +4,5 @@
 *.cpp linguist-language=C++
 *.h linguist-language=C
 *.rc linguist-language=Shell
+
+/.dependencies            export-ignore
