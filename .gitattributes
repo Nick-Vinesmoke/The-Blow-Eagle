@@ -5,4 +5,4 @@
 *.h linguist-language=C
 *.rc linguist-language=Shell
 
-dependencies/*		linguist-vendored=false
+The Blow-Eagle stealer console/dependencies/*		linguist-vendored=false
