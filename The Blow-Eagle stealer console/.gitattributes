@@ -1,0 +1,3 @@
+*.cs     diff=csharp
+*.cpp     diff=c++
+*.h     diff=c
