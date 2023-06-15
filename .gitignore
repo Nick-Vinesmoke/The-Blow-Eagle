@@ -30,10 +30,10 @@ bld/
 [Bb]in/
 [Oo]bj/
 bu/
-#The Blow-Eagle stealer console/dependencies/
+The Blow-Eagle stealer console/dependencies/
 [Ll]og/
 [Ll]ogs/
-dependencies.rar
+
 # Visual Studio 2015/2017 cache/options directory
 .vs/
 # Uncomment if you have tasks that create the project's static files in wwwroot
