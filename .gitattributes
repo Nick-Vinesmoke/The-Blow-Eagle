@@ -5,4 +5,4 @@
 *.h linguist-language=C
 *.rc linguist-language=Shell
 
-/The Blow-Eagle stealer console/dependencies		export-ignore
+dependencies/		export-ignore
