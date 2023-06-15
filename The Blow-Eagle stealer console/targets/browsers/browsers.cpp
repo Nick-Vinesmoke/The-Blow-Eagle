@@ -27,12 +27,12 @@
 #include "../../helper/helper.h"
 #include <fstream>
 #include <vector>
-#include <openssl/evp.h>
-#include <nlohmann/json.hpp>
+//#include <openssl/evp.h>
+//#include <nlohmann/json.hpp>
 #include <string>
 #include <windows.h>
 #include <io.h>
-#include <sodium.h>
+//#include <sodium.h>
 #include <wincrypt.h>
 
 namespace global 
