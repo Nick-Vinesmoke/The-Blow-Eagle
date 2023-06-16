@@ -37,7 +37,7 @@ const wchar_t* GetWC(const char* c)
 
     return wc;
 }
-
+/*
 bool createArchiveWithPassword(const std::string& archiveName, const std::string& password, const std::string& folderPath)
 {
     // Open the archive for writing
@@ -86,6 +86,57 @@ bool createArchiveWithPassword(const std::string& archiveName, const std::string
     std::cout << "Archive created successfully." << std::endl;
     return true;
 }
+*/
+
+int create_archive(std::string archive_name, std::string password, std::string folder_path) {
+    /*
+    This function creates a zip archive with a password and a folder using libzip library.
+
+    Parameters:
+    archive_name (std::string): The name of the archive to be created
+    password (std::string): The password to be used for the archive
+    folder_path (std::string): The path of the folder to be added to the archive
+
+    Returns:
+    int: 0 if the archive was created successfully, -1 otherwise
+    */
+    try {
+        // Open the archive
+        zip_t* archive = zip_open(archive_name.c_str(), ZIP_CREATE | ZIP_EXCL, NULL);
+        if (!archive) {
+            throw std::runtime_error("Failed to create archive");
+        }
+
+        // Add the folder to the archive
+        zip_source_t* source = zip_source_file(archive, folder_path.c_str(), 0, 0);
+        if (!source) {
+            throw std::runtime_error("Failed to add folder to archive");
+        }
+
+        // Set the password for the archive
+        if (zip_set_default_password(archive, password.c_str()) < 0) {
+            throw std::runtime_error("Failed to set password for archive");
+        }
+
+        // Add the folder to the archive
+        if (zip_add(archive, folder_path.c_str(), source) < 0) {
+            throw std::runtime_error("Failed to add folder to archive");
+        }
+
+        // Close the archive
+        if (zip_close(archive) < 0) {
+            throw std::runtime_error("Failed to close archive");
+        }
+
+        return 0;
+    }
+    catch (std::exception& e) {
+        // Log the error
+        std::cerr << "Error: " << e.what() << std::endl;
+        return -1;
+    }
+}
+
 
 void manager::MakeZip()
 {
@@ -116,10 +167,12 @@ void manager::MakeZip()
 
     const std::string folderPath = "C:/Users/" + user + config::path;
 
-    if (createArchiveWithPassword(name, pwd, folderPath)) {
+    /*if (createArchiveWithPassword(name, pwd, folderPath)) {
         std::cout << "Archive created successfully." << std::endl;
     }
     else {
         std::cerr << "Failed to create archive." << std::endl;
-    }
+    }*/
+
+    create_archive(name, pwd, folderPath);
 }
