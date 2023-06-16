@@ -55,9 +55,10 @@ bool createArchiveWithPassword(const std::string& archiveName, const std::string
         zip_close(archive);
         return false;
     }
-
+    zip_error_t error;
+    zip_error_init(&error);
     // Add folder contents to the archive
-    zip_source* source = zip_source_win32w_create(GetWC(folderPath.c_str()), 0, -1, (zip_error_t *)true);
+    zip_source* source = zip_source_win32w_create(GetWC(folderPath.c_str()), 0, -1, &error);
     if (!source)
     {
         std::cerr << "Failed to create a source for the folder." << std::endl;
@@ -85,7 +86,6 @@ bool createArchiveWithPassword(const std::string& archiveName, const std::string
     std::cout << "Archive created successfully." << std::endl;
     return true;
 }
-
 
 void manager::MakeZip()
 {
@@ -116,8 +116,7 @@ void manager::MakeZip()
 
     const std::string folderPath = "C:/Users/" + user + config::path;
 
-    if (createArchiveWithPassword(name, pwd, folderPath)) 
-    {
+    if (createArchiveWithPassword(name, pwd, folderPath)) {
         std::cout << "Archive created successfully." << std::endl;
     }
     else {
