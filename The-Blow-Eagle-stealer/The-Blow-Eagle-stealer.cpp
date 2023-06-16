@@ -124,5 +124,5 @@ void Other()
 
 void Ending() 
 {
-	manager::MakeZip();
+	//manager::MakeZip();
 }
