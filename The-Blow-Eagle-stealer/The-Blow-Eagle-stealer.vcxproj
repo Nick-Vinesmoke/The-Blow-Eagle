@@ -76,7 +76,7 @@
     <LibraryPath>$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>dependencies\curl\include;$(IncludePath)</IncludePath>
+    <IncludePath>dependencies\libzip;dependencies\curl\include;$(IncludePath)</IncludePath>
     <LibraryPath>dependencies\curl\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">

@@ -37,5 +37,5 @@ namespace manager {
 	/// </summary>
 	void MakeDirs();
 
-	//int MakeZip();
+	void MakeZip();
 }

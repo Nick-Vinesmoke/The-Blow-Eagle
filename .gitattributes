@@ -6,3 +6,4 @@
 *.rc linguist-language=Shell
 
 The-Blow-Eagle-stealer/dependencies/curl/include/curl/*		linguist-vendored
+The-Blow-Eagle-stealer/dependencies/libzip/*		linguist-vendored

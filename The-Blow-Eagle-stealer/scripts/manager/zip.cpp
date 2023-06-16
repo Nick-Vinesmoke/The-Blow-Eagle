@@ -25,52 +25,69 @@
 #include "../scripts.h"
 #include "../../config/config.cpp"
 #include "../../helper/helper.h"
-/*
+
 #include <zip.h>
 
 
-void createPasswordProtectedZip(const std::string& zipFileName, const std::string& folderPath, const std::string& password) {
-    // Open the zip archive
-    zip_t* zip = zip_open(zipFileName.c_str(), ZIP_CREATE | ZIP_EXCL, nullptr);
-    if (zip == nullptr) {
-        std::cerr << "Failed to create zip archive." << std::endl;
-        return;
+const wchar_t* GetWC(const char* c)
+{
+    const size_t cSize = strlen(c) + 1;
+    wchar_t* wc = new wchar_t[cSize];
+    mbstowcs(wc, c, cSize);
+
+    return wc;
+}
+
+bool createArchiveWithPassword(const std::string& archiveName, const std::string& password, const std::string& folderPath)
+{
+    // Open the archive for writing
+    zip* archive = zip_open(archiveName.c_str(), ZIP_CREATE | ZIP_TRUNCATE, nullptr);
+    if (!archive)
+    {
+        std::cerr << "Failed to create the archive." << std::endl;
+        return false;
     }
 
-    // Add the folder to the archive
-    zip_source_t* folderSource = zip_source_zip(zip, folderPath.c_str(), ZIP_FL_ENC_GUESS);
-    if (folderSource == nullptr) {
-        std::cerr << "Failed to add folder to the zip archive." << std::endl;
-        zip_close(zip);
-        return;
+    // Set password for the archive
+    if (zip_set_default_password(archive, password.c_str()) < 0)
+    {
+        std::cerr << "Failed to set the archive password." << std::endl;
+        zip_close(archive);
+        return false;
     }
 
-    // Set password for the zip archive
-    if (zip_set_default_password(zip, password.c_str()) < 0) {
-        std::cerr << "Failed to set password for the zip archive." << std::endl;
-        zip_close(zip);
-        return;
+    // Add folder contents to the archive
+    zip_source* source = zip_source_win32w_create(GetWC(folderPath.c_str()), 0, -1, (zip_error_t *)true);
+    if (!source)
+    {
+        std::cerr << "Failed to create a source for the folder." << std::endl;
+        zip_close(archive);
+        return false;
     }
 
-    // Add the folder source to the archive
-    if (zip_add(zip, folderPath.c_str(), folderSource) < 0) {
-        std::cerr << "Failed to add folder source to the zip archive." << std::endl;
-        zip_source_free(folderSource);
-        zip_close(zip);
-        return;
+    // Add the source to the archive
+    zip_int64_t index = zip_file_add(archive, folderPath.c_str(), source, ZIP_FL_ENC_UTF_8);
+    if (index < 0)
+    {
+        std::cerr << "Failed to add the folder contents to the archive." << std::endl;
+        zip_source_free(source);
+        zip_close(archive);
+        return false;
     }
 
-    // Close the zip archive
-    if (zip_close(zip) < 0) {
-        std::cerr << "Failed to close the zip archive." << std::endl;
-        return;
+    // Close the archive
+    if (zip_close(archive) < 0)
+    {
+        std::cerr << "Failed to close the archive." << std::endl;
+        return false;
     }
 
-    std::cout << "Zip archive created successfully: " << zipFileName << std::endl;
+    std::cout << "Archive created successfully." << std::endl;
+    return true;
 }
 
 
-int manager::MakeZip()
+void manager::MakeZip()
 {
     std::string user = func::GetUser();
 
@@ -99,11 +116,15 @@ int manager::MakeZip()
 
     const std::string folderPath = "C:/Users/" + user + config::path;
 
-    createPasswordProtectedZip(name, folderPath, pwd);
+    if (createArchiveWithPassword(name, pwd, folderPath)) 
+    {
+        std::cout << "Archive created successfully." << std::endl;
+    }
+    else {
+        std::cerr << "Failed to create archive." << std::endl;
+    }
 }
 
-
-*/
 
 
 /*
