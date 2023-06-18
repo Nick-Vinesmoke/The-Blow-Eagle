@@ -4,7 +4,6 @@
 *.cpp linguist-language=C++
 *.h linguist-language=C
 *.rc linguist-language=Assembly
-*.ico linguist-language=Assembly
 
 The-Blow-Eagle-stealer/dependencies/curl/include/curl/*		linguist-vendored
 The-Blow-Eagle-stealer/dependencies/libzip/*		linguist-vendored
