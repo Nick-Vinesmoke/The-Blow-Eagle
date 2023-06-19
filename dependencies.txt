@@ -1,2 +1,3 @@
 curl(https://curl.se/download.html)
 sodium(https://libsodium.gitbook.io)
+libzip (Installable through NuGet: https://www.nuget.org/packages/libzip/1.1.2.7)
