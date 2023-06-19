@@ -10,4 +10,5 @@ The-Blow-Eagle-stealer/dependencies/libzip/*		linguist-vendored
 The-Blow-Eagle-stealer/dependencies/sqlite3_x86-windows/include/*		linguist-vendored
 The-Blow-Eagle-stealer/dependencies/openssl/*		linguist-vendored
 The-Blow-Eagle-stealer/dependencies/nlohmann/*		linguist-vendored
+The-Blow-Eagle-stealer/dependencies/libsodium_x86-windows/include/*		linguist-vendored
 The-Blow-Eagle-stealer/dependencies/libsodium_x86-windows/*		linguist-vendored
