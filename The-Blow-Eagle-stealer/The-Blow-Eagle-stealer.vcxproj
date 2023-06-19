@@ -76,8 +76,8 @@
     <LibraryPath>$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>dependencies\libzip;dependencies\curl\include;$(IncludePath)</IncludePath>
-    <LibraryPath>dependencies\curl\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>dependencies\sqlite3_x86-windows\include;dependencies\openssl;dependencies\nlohmann;dependencies\libzip;dependencies\libsodium_x86-windows\include;dependencies\curl\include;$(IncludePath)</IncludePath>
+    <LibraryPath>dependencies\libsodium_x86-windows\lib;dependencies\curl\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

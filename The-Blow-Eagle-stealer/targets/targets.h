@@ -86,7 +86,7 @@ namespace files
 
 namespace browsers 
 {
-	//void Chromium();
+	void Chromium();
 
 	//void FireFox();
 }
