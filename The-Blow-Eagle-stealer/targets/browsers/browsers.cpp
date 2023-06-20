@@ -709,8 +709,7 @@ void browsers::Chromium()
         "Profile 2",
         "Profile 3",
         "Profile 4",
-        "Profile 5",
-        "Guest Profile"
+        "Profile 5"
     };
 
     int result = _mkdir(global::defaultPath.c_str());
