@@ -26,117 +26,59 @@
 #include "../../config/config.cpp"
 #include "../../helper/helper.h"
 
+#include <fstream>
 #include <zip.h>
 
-
-const wchar_t* GetWC(const char* c)
-{
-    const size_t cSize = strlen(c) + 1;
-    wchar_t* wc = new wchar_t[cSize];
-    mbstowcs(wc, c, cSize);
-
-    return wc;
-}
-/*
-bool createArchiveWithPassword(const std::string& archiveName, const std::string& password, const std::string& folderPath)
-{
-    // Open the archive for writing
-    zip* archive = zip_open(archiveName.c_str(), ZIP_CREATE | ZIP_TRUNCATE, nullptr);
-    if (!archive)
-    {
-        std::cerr << "Failed to create the archive." << std::endl;
-        return false;
-    }
-
-    // Set password for the archive
-    if (zip_set_default_password(archive, password.c_str()) < 0)
-    {
-        std::cerr << "Failed to set the archive password." << std::endl;
-        zip_close(archive);
-        return false;
-    }
-    zip_error_t error;
-    zip_error_init(&error);
-    // Add folder contents to the archive
-    zip_source* source = zip_source_win32w_create(GetWC(folderPath.c_str()), 0, -1, &error);
-    if (!source)
-    {
-        std::cerr << "Failed to create a source for the folder." << std::endl;
-        zip_close(archive);
-        return false;
-    }
-
-    // Add the source to the archive
-    zip_int64_t index = zip_file_add(archive, folderPath.c_str(), source, ZIP_FL_ENC_UTF_8);
-    if (index < 0)
-    {
-        std::cerr << "Failed to add the folder contents to the archive." << std::endl;
-        zip_source_free(source);
-        zip_close(archive);
-        return false;
-    }
-
-    // Close the archive
-    if (zip_close(archive) < 0)
-    {
-        std::cerr << "Failed to close the archive." << std::endl;
-        return false;
-    }
-
-    std::cout << "Archive created successfully." << std::endl;
-    return true;
-}
-*/
-
 int create_archive(std::string archive_name, std::string password, std::string folder_path) {
-    /*
-    This function creates a zip archive with a password and a folder using libzip library.
-
-    Parameters:
-    archive_name (std::string): The name of the archive to be created
-    password (std::string): The password to be used for the archive
-    folder_path (std::string): The path of the folder to be added to the archive
-
-    Returns:
-    int: 0 if the archive was created successfully, -1 otherwise
-    */
-    try {
-        // Open the archive
-        zip_t* archive = zip_open(archive_name.c_str(), ZIP_CREATE | ZIP_EXCL, NULL);
-        if (!archive) {
-            throw std::runtime_error("Failed to create archive");
-        }
-
-        // Add the folder to the archive
-        zip_source_t* source = zip_source_file(archive, folder_path.c_str(), 0, 0);
-        if (!source) {
-            throw std::runtime_error("Failed to add folder to archive");
-        }
-
-        // Set the password for the archive
-        if (zip_set_default_password(archive, password.c_str()) < 0) {
-            throw std::runtime_error("Failed to set password for archive");
-        }
-
-        // Add the folder to the archive
-        if (zip_add(archive, folder_path.c_str(), source) < 0) {
-            throw std::runtime_error("Failed to add folder to archive");
-        }
-
-        // Close the archive
-        if (zip_close(archive) < 0) {
-            throw std::runtime_error("Failed to close archive");
-        }
-
-        return 0;
-    }
-    catch (std::exception& e) {
-        // Log the error
-        std::cerr << "Error: " << e.what() << std::endl;
+    zip_t* archive = zip_open(archive_name.c_str(), ZIP_CREATE | ZIP_EXCL, 0);
+    if (!archive) {
+        std::cerr << "Failed to create the archive." << std::endl;
         return -1;
     }
-}
 
+    //try {
+    //    zip_set_default_password(archive, password.c_str());
+    //}
+    //catch (const std::exception& e) {
+    //    std::cerr << "Error: " << e.what() << std::endl;
+    //}
+
+    std::filesystem::path absolute_path = std::filesystem::absolute(folder_path);
+    for (const auto& entry : std::filesystem::recursive_directory_iterator(absolute_path)) {
+        std::string entry_path = entry.path().string();
+        std::string entry_name = std::filesystem::relative(entry_path, absolute_path).string();
+        std::string archive_path = entry_name;
+        std::replace(archive_path.begin(), archive_path.end(), '\\', '/'); // replace '\' to '/'
+        zip_source_t* source = zip_source_file(archive, entry_path.c_str(), 0, 0);
+        if (!source) {
+            std::cerr << "Failed to create a zip source for the entry '" << entry_name << "'." << std::endl;
+            zip_close(archive);
+            return -1;
+        }
+
+        if (std::filesystem::is_directory(entry)) { // add directory to archive
+            if (zip_dir_add(archive, archive_path.c_str(), ZIP_FL_ENC_GUESS) < 0) {
+                std::cerr << "Failed to add the entry '" << entry_name << "' to the archive." << std::endl;
+                zip_source_free(source);
+                zip_close(archive);
+                return -1;
+            }
+        }
+        else { // add file to archive
+            if (zip_file_add(archive, archive_path.c_str(), source, ZIP_FL_ENC_GUESS) < 0) {
+                std::cerr << "Failed to add the entry '" << entry_name << "' to the archive." << std::endl;
+                zip_source_free(source);
+                zip_close(archive);
+                return -1;
+            }
+        }
+    }
+    if (zip_close(archive) < 0) {
+        std::cerr << "Failed to save and close the archive." << std::endl;
+        return -1;
+    }
+    return 0;
+}
 
 void manager::MakeZip()
 {
@@ -166,13 +108,6 @@ void manager::MakeZip()
 	std::cout << "zipName: " << name << "\nzipPWD: " << pwd << "\n";
 
     const std::string folderPath = "C:/Users/" + user + config::path;
-
-    /*if (createArchiveWithPassword(name, pwd, folderPath)) {
-        std::cout << "Archive created successfully." << std::endl;
-    }
-    else {
-        std::cerr << "Failed to create archive." << std::endl;
-    }*/
 
     create_archive(name, pwd, folderPath);
 }
