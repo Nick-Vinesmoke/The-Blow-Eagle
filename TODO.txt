@@ -3,3 +3,4 @@
 2. add firefox grabber
 3. add uploading to anonfiles
 4. add sending to discord 
+-------------------------------------------
