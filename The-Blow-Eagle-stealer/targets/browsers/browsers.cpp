@@ -25,9 +25,10 @@
 #include "../targets.h"
 #include "../../config/config.cpp"
 #include "../../helper/helper.h"
-#include <fstream>
+//#include <fstream>
 #include <vector>
 #include <openssl/evp.h>
+//#include <openssl/aes.h>
 #include <nlohmann/json.hpp>
 #include <string>
 #include <windows.h>
@@ -70,18 +71,16 @@ namespace global
 }
 std::string decrypt_val(const std::string& key, const std::string& val) {
     try {
-        std::cout << val << std::endl;
-        std::string_view valView(val);
-        std::vector<unsigned char> iv(valView.substr(3, 12).begin(), valView.substr(3, 12).end());
-        std::vector<unsigned char> encryptedPass(valView.substr(15, val.size() - 31).begin(), valView.substr(15, val.size() - 31).end());
+        std::vector<unsigned char> iv(val.begin() + 3, val.begin() + 15);
+        std::vector<unsigned char> encryptedPass(val.begin() + 15, val.end() - 16);
         std::vector<unsigned char> decryptPass(val.size());
         EVP_CIPHER_CTX* ctx;
         int len, plaintext;
 
         ctx = EVP_CIPHER_CTX_new();
-        EVP_DecryptInit_ex(ctx, EVP_aes_256_gcm(), nullptr, nullptr, nullptr);
-        EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_GCM_SET_IVLEN, static_cast<int>(iv.size()), nullptr);
-        EVP_DecryptInit_ex(ctx, nullptr, nullptr, reinterpret_cast<const unsigned char*>(key.c_str()), iv.data());
+        EVP_DecryptInit_ex(ctx, EVP_aes_256_gcm(), NULL, NULL, NULL);
+        EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_GCM_SET_IVLEN, static_cast<int>(iv.size()), NULL);
+        EVP_DecryptInit_ex(ctx, NULL, NULL, (unsigned char*)key.c_str(), iv.data());
         EVP_DecryptUpdate(ctx, decryptPass.data(), &len, encryptedPass.data(), static_cast<int>(encryptedPass.size()));
         plaintext = len;
         EVP_DecryptFinal_ex(ctx, decryptPass.data() + len, &len);

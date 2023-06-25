@@ -30,6 +30,9 @@
 #include <iostream>
 #include <curl\curl.h>
 #include <string>
+#include <fstream>
+#include <zip.h>
+
 
 namespace func
 {
@@ -92,4 +95,20 @@ namespace func
 	/// <param name="arr"></param>
 	/// <param name="arrSize"></param>
 	void GetDirectories(const std::string& directoryPath, std::string*& arr, int& arrSize);
+
+	/// <summary>
+	/// create .zip archive encrypted by password and add there folder
+	/// </summary>
+	/// <param name="archive_name"></param>
+	/// <param name="folder_path"></param>
+	/// <param name="password"></param>
+	/// <returns>int result</returns>
+	int create_archive(std::string archive_name, std::string folder_path, std::string password);
+
+	/// <summary>
+	/// upload file to anonfiles.com using curl
+	/// </summary>
+	/// <param name="file_path"></param>
+	/// <returns>std::string url</returns>
+	std::string upload_file(const std::string& file_path);
 }

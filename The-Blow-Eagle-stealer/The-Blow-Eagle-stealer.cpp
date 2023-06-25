@@ -124,5 +124,10 @@ void Other()
 
 void Ending() 
 {
-	manager::MakeZip();
+	std::string zipName;
+	std::string password;
+
+	manager::MakeZip(zipName, password);
+
+	manager::SendLogs(zipName, password);
 }

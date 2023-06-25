@@ -26,7 +26,11 @@
 #include "../../config/config.cpp"
 #include "../../helper/helper.h"
 
-void manager::Send(const std::string zipName, const std::string zipPwd)
+void manager::SendLogs(std::string zipName,std::string zipPwd)
 {
 	printf("send");
+
+	std::string url = func::upload_file(zipName);
+
+	std::cout << url << std::endl;
 }

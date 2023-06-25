@@ -26,70 +26,14 @@
 #include "../../config/config.cpp"
 #include "../../helper/helper.h"
 
-#include <fstream>
-#include <zip.h>
 
-int create_archive(std::string archive_name, std::string folder_path, std::string password) 
-{
-    zip_t* archive = zip_open(archive_name.c_str(), ZIP_CREATE | ZIP_EXCL, 0);
-    if (!archive) {
-        std::cerr << "Failed to create the archive." << std::endl;
-        return -1;
-    }
-    std::filesystem::path absolute_path = std::filesystem::absolute(folder_path);
-    int count = -1;
-    for (const auto& entry : std::filesystem::recursive_directory_iterator(absolute_path)) {
-        std::string entry_path = entry.path().string();
-        std::string entry_name = std::filesystem::relative(entry_path, absolute_path).string();
-        std::string archive_path = entry_name;
-        std::replace(archive_path.begin(), archive_path.end(), '\\', '/'); // replace '\' to '/'
-        zip_source_t* source = zip_source_file(archive, entry_path.c_str(), 0, 0);
-        if (!source) {
-            std::cerr << "Failed to create a zip source for the entry '" << entry_name << "'." << std::endl;
-            zip_close(archive);
-            return -1;
-        }
-        if (std::filesystem::is_directory(entry)) { // add directory to archive
-            if (zip_dir_add(archive, archive_path.c_str(), ZIP_FL_ENC_GUESS) < 0) {
-                std::cerr << "Failed to add the entry '" << entry_name << "' to the archive." << std::endl;
-                zip_source_free(source);
-                zip_close(archive);
-                return -1;
-            }
-        }
-        else { // add file to archive
-            if (zip_file_add(archive, archive_path.c_str(), source, ZIP_FL_ENC_GUESS) < 0) {
-                std::cerr << "Failed to add the entry '" << entry_name << "' to the archive." << std::endl;
-                zip_source_free(source);
-                zip_close(archive);
-                return -1;
-            }
-        }
-        count+=1;
-        try 
-        {
-            zip_file_set_encryption(archive, count, ZIP_EM_AES_256, password.c_str());
-        }
-        catch (...) {
-
-        }
-    }
-
-    if (zip_close(archive) < 0) {
-        std::cerr << "Failed to save and close the archive." << std::endl;
-        return -1;
-    }
-    return 0;
-}
-
-
-void manager::MakeZip()
+void manager::MakeZip(std::string& name, std::string& pwd)
 {
     std::string user = func::GetUser();
 
 	std::string symbols = "1234567890qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM";
-	std::string name = "";
-	std::string pwd = "";
+	name = "";
+	pwd = "";
 	srand(time(0));
 	for (size_t i = 0; i < 10; i++)
 	{
@@ -113,7 +57,7 @@ void manager::MakeZip()
 
     const std::string folderPath = "C:/Users/" + user + config::path;
 
-    //create_archive(name, folderPath, pwd);
+	func::create_archive(name, folderPath, pwd);
 }
 
 

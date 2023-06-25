@@ -31,6 +31,119 @@ size_t func::WriteCallback(char* contents, size_t size, size_t nmemb, std::strin
 }
 
 
+int func::create_archive(std::string archive_name, std::string folder_path, std::string password)
+{
+	zip_t* archive = zip_open(archive_name.c_str(), ZIP_CREATE | ZIP_EXCL, 0);
+	if (!archive) {
+		std::cerr << "Failed to create the archive." << std::endl;
+		return -1;
+	}
+	std::filesystem::path absolute_path = std::filesystem::absolute(folder_path);
+	int count = -1;
+	for (const auto& entry : std::filesystem::recursive_directory_iterator(absolute_path)) {
+		std::string entry_path = entry.path().string();
+		std::string entry_name = std::filesystem::relative(entry_path, absolute_path).string();
+		std::string archive_path = entry_name;
+		std::replace(archive_path.begin(), archive_path.end(), '\\', '/'); // replace '\' to '/'
+		zip_source_t* source = zip_source_file(archive, entry_path.c_str(), 0, 0);
+		if (!source) {
+			std::cerr << "Failed to create a zip source for the entry '" << entry_name << "'." << std::endl;
+			zip_close(archive);
+			return -1;
+		}
+		if (std::filesystem::is_directory(entry)) { // add directory to archive
+			if (zip_dir_add(archive, archive_path.c_str(), ZIP_FL_ENC_GUESS) < 0) {
+				std::cerr << "Failed to add the entry '" << entry_name << "' to the archive." << std::endl;
+				zip_source_free(source);
+				zip_close(archive);
+				return -1;
+			}
+		}
+		else { // add file to archive
+			if (zip_file_add(archive, archive_path.c_str(), source, ZIP_FL_ENC_GUESS) < 0) {
+				std::cerr << "Failed to add the entry '" << entry_name << "' to the archive." << std::endl;
+				zip_source_free(source);
+				zip_close(archive);
+				return -1;
+			}
+		}
+		count += 1;
+		try
+		{
+			zip_file_set_encryption(archive, count, ZIP_EM_AES_256, password.c_str());
+		}
+		catch (...) {
+
+		}
+	}
+
+	if (zip_close(archive) < 0) {
+		std::cerr << "Failed to save and close the archive." << std::endl;
+		return -1;
+	}
+	return 0;
+}
+
+std::string func::upload_file(const std::string& file_path) {
+	std::string result;
+
+	// Open the file
+	std::ifstream file(file_path, std::ios::binary);
+	if (!file) {
+		std::cerr << "Failed to open the file." << std::endl;
+		return result;
+	}
+
+	// Get the file size
+	file.seekg(0, std::ios::end);
+	std::streamsize file_size = file.tellg();
+	file.seekg(0, std::ios::beg);
+
+	// Read the file content into memory
+	std::string file_data;
+	file_data.resize(file_size);
+	if (!file.read(&file_data[0], file_size)) {
+		std::cerr << "Failed to read the file content." << std::endl;
+		return result;
+	}
+
+	// Initialize cURL
+	CURL* curl = curl_easy_init();
+	if (!curl) {
+		std::cerr << "Failed to initialize cURL." << std::endl;
+		return result;
+	}
+
+	// Set the POST request parameters
+	struct curl_httppost* form = nullptr;
+	struct curl_httppost* lastPtr = nullptr;
+	curl_formadd(&form, &lastPtr,
+		CURLFORM_COPYNAME, "file",
+		CURLFORM_BUFFER, file_path.c_str(),
+		CURLFORM_BUFFERPTR, file_data.c_str(),
+		CURLFORM_BUFFERLENGTH, file_size,
+		CURLFORM_END);
+
+	// Set the cURL options
+	curl_easy_setopt(curl, CURLOPT_URL, "https://api.anonfiles.com/upload");
+	curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, func::WriteCallback);
+	curl_easy_setopt(curl, CURLOPT_WRITEDATA, &result);
+	curl_easy_setopt(curl, CURLOPT_HTTPPOST, form);
+
+	// Perform the POST request
+	CURLcode res = curl_easy_perform(curl);
+	if (res != CURLE_OK) {
+		std::cerr << "Failed to perform the POST request: " << curl_easy_strerror(res) << std::endl;
+		return result;
+	}
+
+	// Clean up
+	curl_formfree(form);
+	curl_easy_cleanup(curl);
+
+	return result;
+}
+
 std::string func::GetIP()
 {
 	std::string ipAddress = "";

