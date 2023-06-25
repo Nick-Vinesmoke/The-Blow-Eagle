@@ -113,7 +113,7 @@ void manager::MakeZip()
 
     const std::string folderPath = "C:/Users/" + user + config::path;
 
-    create_archive(name, folderPath, pwd);
+    //create_archive(name, folderPath, pwd);
 }
 
 

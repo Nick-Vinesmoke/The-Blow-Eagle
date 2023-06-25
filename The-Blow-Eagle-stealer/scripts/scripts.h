@@ -38,4 +38,6 @@ namespace manager {
 	void MakeDirs();
 
 	void MakeZip();
+
+	void Send(const std::string zipName, const std::string zipPwd);
 }

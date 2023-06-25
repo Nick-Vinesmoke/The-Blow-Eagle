@@ -21,3 +21,12 @@
 |Original repo: https://github.com/Nick-Vinesmoke/The-Blow-Eagle|
 -----------------------------------------------------------------
 */
+
+#include "../scripts.h"
+#include "../../config/config.cpp"
+#include "../../helper/helper.h"
+
+void manager::Send(const std::string zipName, const std::string zipPwd)
+{
+	printf("send");
+}
