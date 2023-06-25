@@ -720,7 +720,7 @@ void browsers::Chromium()
     {
         if (std::filesystem::exists(browsersPaths[i])) 
         {
-            printf("%s", browsersPaths[i].c_str());
+            printf("%s\n", browsersPaths[i].c_str());
             std::string urmasterkey = getMasterKey(browsersPaths[i]);
 
             for (size_t j = 0; j < std::size(profiles); j++)
