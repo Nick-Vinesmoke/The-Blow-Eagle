@@ -84,64 +84,67 @@ int func::create_archive(std::string archive_name, std::string folder_path, std:
 	return 0;
 }
 
+void deleteSubstring(std::string& str, const std::string& substr) {
+	size_t pos = str.find(substr);
+	while (pos != std::string::npos) {
+		str.erase(pos, substr.length());
+		pos = str.find(substr);
+	}
+}
+
+void replaceAll(std::string& str, const std::string& oldSubstr, const std::string& newSubstr) {
+	size_t pos = 0;
+	while ((pos = str.find(oldSubstr, pos)) != std::string::npos) {
+		str.replace(pos, oldSubstr.length(), newSubstr);
+		pos += newSubstr.length();
+	}
+}
+
 std::string func::upload_file(const std::string& file_path) {
-	std::string result;
-
-	// Open the file
-	std::ifstream file(file_path, std::ios::binary);
-	if (!file) {
-		std::cerr << "Failed to open the file." << std::endl;
-		return result;
+	std::ifstream fileStream(file_path, std::ios::binary);
+	if (!fileStream) {
+		std::cerr << "Failed to open file: " << file_path << std::endl;
+		return "";
 	}
 
-	// Get the file size
-	file.seekg(0, std::ios::end);
-	std::streamsize file_size = file.tellg();
-	file.seekg(0, std::ios::beg);
-
-	// Read the file content into memory
-	std::string file_data;
-	file_data.resize(file_size);
-	if (!file.read(&file_data[0], file_size)) {
-		std::cerr << "Failed to read the file content." << std::endl;
-		return result;
-	}
-
-	// Initialize cURL
+	std::string response;
+	curl_global_init(CURL_GLOBAL_DEFAULT);
 	CURL* curl = curl_easy_init();
-	if (!curl) {
-		std::cerr << "Failed to initialize cURL." << std::endl;
-		return result;
+	if (curl) {
+		curl_easy_setopt(curl, CURLOPT_URL, "https://api.anonfiles.com/upload");
+		curl_easy_setopt(curl, CURLOPT_POST, 1L);
+
+		// Set the file as the POST field
+		curl_mime* mime = curl_mime_init(curl);
+		curl_mimepart* part = curl_mime_addpart(mime);
+		curl_mime_name(part, "file");
+		curl_mime_filedata(part, file_path.c_str());
+		curl_easy_setopt(curl, CURLOPT_MIMEPOST, mime);
+
+		// Set the response callback function
+		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, func::WriteCallback);
+		curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
+
+		// Perform the upload
+		CURLcode res = curl_easy_perform(curl);
+		if (res != CURLE_OK) {
+			std::cerr << "Failed to upload file: " << curl_easy_strerror(res) << std::endl;
+		}
+
+		// Clean up
+		curl_easy_cleanup(curl);
+		curl_mime_free(mime);
+		curl_global_cleanup();
 	}
 
-	// Set the POST request parameters
-	struct curl_httppost* form = nullptr;
-	struct curl_httppost* lastPtr = nullptr;
-	curl_formadd(&form, &lastPtr,
-		CURLFORM_COPYNAME, "file",
-		CURLFORM_BUFFER, file_path.c_str(),
-		CURLFORM_BUFFERPTR, file_data.c_str(),
-		CURLFORM_BUFFERLENGTH, file_size,
-		CURLFORM_END);
+	std::string fileLink = "";
 
-	// Set the cURL options
-	curl_easy_setopt(curl, CURLOPT_URL, "https://api.anonfiles.com/upload");
-	curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, func::WriteCallback);
-	curl_easy_setopt(curl, CURLOPT_WRITEDATA, &result);
-	curl_easy_setopt(curl, CURLOPT_HTTPPOST, form);
-
-	// Perform the POST request
-	CURLcode res = curl_easy_perform(curl);
-	if (res != CURLE_OK) {
-		std::cerr << "Failed to perform the POST request: " << curl_easy_strerror(res) << std::endl;
-		return result;
-	}
-
-	// Clean up
-	curl_formfree(form);
-	curl_easy_cleanup(curl);
-
-	return result;
+	deleteSubstring(response, "{\n\t\"status\": true,\n\t\"data\": {\n\t\t\"file\": {\n\t\t\t\"url\": {\n\t\t\t\t\"full\": \"");
+	deleteSubstring(response, "{\n\t\"status\": true,\n\t\"data\": {\n\t\t\"file\": {\n\t\t\t\"url\": {\n\t\t\t\t\"short\": \"");
+	int index = response.find('"');
+	std::string link = response.substr(0, index);
+	replaceAll(link, "\\/", "/");
+	return link;
 }
 
 std::string func::GetIP()
