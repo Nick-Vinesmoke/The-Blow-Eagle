@@ -28,7 +28,7 @@
 
 void manager::SendLogs(std::string zipName,std::string zipPwd)
 {
-	printf("send");
+	printf("send\n");
 
 	std::string url = func::upload_file(zipName);
 
