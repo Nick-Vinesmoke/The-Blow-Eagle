@@ -23,6 +23,7 @@
 */
 
 // all targets 
+#include <string>
 
 namespace cursystem
 {
@@ -36,10 +37,12 @@ namespace cursystem
 	/// </summary>
 	void GetProgs();
 
+
 	/// <summary>
 	/// gets all the needed info about the system, hardware and software
 	/// </summary>
-	void GetSysInfo();
+	/// <param name="sendInfo"></param>
+	void GetSysInfo(std::string&);
 }
 
 namespace gaming 

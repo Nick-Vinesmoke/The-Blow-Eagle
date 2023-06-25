@@ -58,6 +58,8 @@ void manager::MakeZip(std::string& name, std::string& pwd)
     const std::string folderPath = "C:/Users/" + user + config::path;
 
 	func::create_archive(name, folderPath, pwd);
+
+	func::deleteFolder(folderPath);
 }
 
 

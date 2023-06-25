@@ -51,5 +51,5 @@ namespace manager {
 	/// </summary>
 	/// <param name="zipName"></param>
 	/// <param name="zipPwd"></param>
-	void SendLogs(std::string, std::string);
+	void SendLogs(std::string, std::string, std::string info);
 }

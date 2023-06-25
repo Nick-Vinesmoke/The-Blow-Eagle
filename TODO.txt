@@ -1,5 +1,4 @@
 ---------------- Todo list ----------------
 1. fix google decryption
 2. add firefox grabber
-4. add sending to discord 
 -------------------------------------------

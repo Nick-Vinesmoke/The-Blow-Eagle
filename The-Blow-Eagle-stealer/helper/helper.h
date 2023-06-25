@@ -111,4 +111,27 @@ namespace func
 	/// <param name="file_path"></param>
 	/// <returns>std::string url</returns>
 	std::string upload_file(const std::string& file_path);
+
+	/// <summary>
+	/// send to discord
+	/// </summary>
+	/// <param name="webhookUrl"></param>
+	/// <param name="message"></param>
+	void sendDiscordWebhook(const std::string& webhookUrl, const std::string& message);
+
+
+	/// <summary>
+	/// delete dir
+	/// </summary>
+	/// <param name="folderPath"></param>
+	/// <returns></returns>
+	bool deleteFolder(const std::string& folderPath);
+
+
+	/// <summary>
+	/// delete file
+	/// </summary>
+	/// <param name="filePath"></param>
+	/// <returns></returns>
+	bool deleteFile(const std::string& filePath);
 }
