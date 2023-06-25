@@ -1,6 +1,5 @@
 ---------------- Todo list ----------------
 1. fix google decryption
 2. add firefox grabber
-2. add encryption of zip
 3. add uploading to anonfiles
 4. add sending to discord 
