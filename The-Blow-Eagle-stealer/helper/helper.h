@@ -117,7 +117,7 @@ namespace func
 	/// </summary>
 	/// <param name="webhookUrl"></param>
 	/// <param name="message"></param>
-	void sendDiscordWebhook(const std::string& webhookUrl, const std::string& message);
+	void sendDiscordWebhook(const const char* webhookUrl, const char* content);
 
 
 	/// <summary>
@@ -134,4 +134,5 @@ namespace func
 	/// <param name="filePath"></param>
 	/// <returns></returns>
 	bool deleteFile(const std::string& filePath);
+
 }

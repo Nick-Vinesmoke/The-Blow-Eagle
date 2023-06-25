@@ -41,8 +41,7 @@ namespace cursystem
 	/// <summary>
 	/// gets all the needed info about the system, hardware and software
 	/// </summary>
-	/// <param name="sendInfo"></param>
-	void GetSysInfo(std::string&);
+	void GetSysInfo();
 }
 
 namespace gaming 

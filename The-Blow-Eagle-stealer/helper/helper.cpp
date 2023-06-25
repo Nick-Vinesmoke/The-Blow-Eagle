@@ -144,34 +144,38 @@ std::string func::upload_file(const std::string& file_path) {
 	int index = response.find('"');
 	std::string link = response.substr(0, index);
 	replaceAll(link, "\\/", "/");
+	replaceAll(link, "\\\\", "//");
 	return link;
 }
 
-void func::sendDiscordWebhook(const std::string& webhookUrl, const std::string& message)
+void func::sendDiscordWebhook(const char* webhookUrl, const char* content)
 {
-	CURL* curl = curl_easy_init();
+	CURL* curl;
+	CURLcode res;
+
+	curl_global_init(CURL_GLOBAL_ALL);
+
+	curl = curl_easy_init();
 	if (curl) {
-		curl_easy_setopt(curl, CURLOPT_URL, webhookUrl.c_str());
-		curl_easy_setopt(curl, CURLOPT_POST, 1L);
+		curl_easy_setopt(curl, CURLOPT_URL, webhookUrl);
 
-		// Set the message payload
-		std::string jsonPayload = "{\"content\":\"" + message + "\"}";
-		curl_easy_setopt(curl, CURLOPT_POSTFIELDS, jsonPayload.c_str());
+		struct curl_slist* list = NULL;
+		list = curl_slist_append(list, "Content-Type: application/json");
 
-		// Set the response callback function
-		std::string response;
-		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteCallback);
-		curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
+		curl_easy_setopt(curl, CURLOPT_HTTPHEADER, list);
 
-		// Perform the HTTP request
-		CURLcode res = curl_easy_perform(curl);
-		if (res != CURLE_OK) {
-			std::cerr << "Failed to send Discord webhook: " << curl_easy_strerror(res) << std::endl;
-		}
+		curl_easy_setopt(curl, CURLOPT_POSTFIELDS, content);
 
-		// Clean up
+		res = curl_easy_perform(curl);
+		curl_slist_free_all(list);     
+
+		if (res != CURLE_OK)
+			fprintf(stderr, "curl_easy_perform() failed: %s\n",
+				curl_easy_strerror(res));
+
 		curl_easy_cleanup(curl);
 	}
+	curl_global_cleanup();
 }
 
 

