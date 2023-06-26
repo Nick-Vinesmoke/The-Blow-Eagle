@@ -22,6 +22,7 @@
 -----------------------------------------------------------------
 */
 
+#pragma once
 #include <Lmcons.h>
 #include <Windows.h>
 #include <string.h>

@@ -23,6 +23,7 @@
 */
 
 // header for access to dir scripts
+#pragma once
 #include <string.h>
 #include <iostream>
 

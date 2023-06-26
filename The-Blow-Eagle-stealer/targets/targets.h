@@ -23,6 +23,7 @@
 */
 
 // all targets 
+#pragma once
 #include <string>
 
 namespace cursystem
